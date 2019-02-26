@@ -16,6 +16,7 @@ export default {
   'menu.form.advancedform': '高級表單',
   'menu.list': '列表頁',
   'menu.list.searchtable': '查詢表格',
+  'menu.list.ambulmanage': '出車管理',
   'menu.list.basiclist': '標淮列表',
   'menu.list.cardlist': '卡片列表',
   'menu.list.searchlist': '搜索列表',

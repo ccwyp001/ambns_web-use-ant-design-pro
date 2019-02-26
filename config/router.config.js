@@ -103,6 +103,11 @@ export default [
             component: './List/TableList',
           },
           {
+            path: '/list/ambul-manage',
+            name: 'ambulmanage',
+            component: './List/NewAmbulManage',
+          },
+          {
             path: '/list/basic-list',
             name: 'basiclist',
             component: './List/BasicList',

@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
+import { fakeAccountLogin, getFakeCaptcha, refreshToken } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
@@ -45,6 +45,9 @@ export default {
       yield call(getFakeCaptcha, payload);
     },
 
+    *reToken(_, {call}){
+      yield call(refreshToken);
+    },
     *logout(_, { put }) {
       yield put({
         type: 'changeLoginStatus',

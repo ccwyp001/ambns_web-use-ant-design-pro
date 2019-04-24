@@ -1,5 +1,6 @@
 import { stringify } from 'qs';
-import request from '@/utils/request';
+import request, {loginRequest} from '@/utils/request';
+
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -104,7 +105,7 @@ export async function updateFakeList(params) {
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return loginRequest('/api/v1/user/login', {
     method: 'POST',
     body: params,
   });
@@ -123,4 +124,8 @@ export async function queryNotices(params = {}) {
 
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
+}
+
+export async function refreshToken() {
+  return loginRequest('/api/v1/user/token', {method: 'POST'})
 }

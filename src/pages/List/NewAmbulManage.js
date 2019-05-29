@@ -22,6 +22,8 @@ import {
   Radio,
   Checkbox,
   Upload,
+  Popover,
+  Tag,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -284,7 +286,7 @@ class NewAmbulManage extends PureComponent {
       dataIndex: 'status',
       render(val) {
         let state;
-        if (val === '站内待命') {state = 1;} else {state = 0}
+        if (val === '站内待命' || val === '途中待命') {state = 1;} else {state = 0}
         return <Badge status={statusMap[state]} text={val} />;
       },
     },
@@ -297,6 +299,22 @@ class NewAmbulManage extends PureComponent {
     {
       title: '操作',
       render: (text, record) => {
+        const reason = record.cancel_reason;
+        const {tsqk} = record;
+          if (reason !== 'None' || tsqk !== 'None') {
+            const content = (
+              <div>
+                <p>取消原因：{reason}</p>
+                <p>特殊情况：{tsqk}</p>
+              </div>
+            );
+          return (
+            <Popover content={content} title="未接到病人" trigger="hover">
+              <Tag color="#87d068">无需登记</Tag>
+            </Popover>
+
+          )
+        }
           return (
             <Fragment>
               <a onClick={() => this.handleUpdateModalVisible(true, record)}>{record.registered === '' ? '登记':'已登记'}</a>

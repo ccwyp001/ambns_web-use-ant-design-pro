@@ -59,6 +59,7 @@ class UpdateForm extends PureComponent {
         lsh: props.values.lsh,
         clid: props.values.clid,
         workwear: props.values.workwear,
+        real_out: props.values.real_out,
         work_cards: props.values.work_cards,
         medical_warehouse: props.values.medical_warehouse,
         fileList: props.values.fileList,
@@ -115,6 +116,13 @@ class UpdateForm extends PureComponent {
               <Col span={8}><Checkbox value="2">护士</Checkbox></Col>
             </Row>
           </Checkbox.Group>
+        )}
+      </FormItem>,
+      <FormItem key="real_out" {...this.formLayout} label="实际出车时间">
+        {form.getFieldDecorator('real_out', {
+          initialValue: formVals.real_out ? moment(formVals.real_out) : null,
+        })(
+          <DatePicker showTime placeholder="Select Time" format="YYYY-MM-DD HH:mm:ss" />
         )}
       </FormItem>,
       <FormItem key="medical_warehouse" {...this.formLayout} label="接诊后有乘坐医疗仓">
@@ -270,7 +278,7 @@ class NewAmbulManage extends PureComponent {
     {
       title: '流水号',
       dataIndex: 'lsh',
-      // render: text => <a onClick={() => this.previewItem(text)}>{text}</a>,
+      render: text => <a onClick={() => this.previewItem(text)}>{text}</a>,
     },
     {
       title: '车辆',
@@ -366,7 +374,7 @@ class NewAmbulManage extends PureComponent {
   };
 
   previewItem = id => {
-    router.push(`/profile/basic/${id}`);
+    router.push(`/list/ambul-detail/${id}`);
   };
 
   handleFormReset = () => {

@@ -143,9 +143,12 @@ const advancedOperation3 = [
   },
 ];
 const getProfileAdvancedData = {
+  code:10000,
+  result:{
   advancedOperation1,
   advancedOperation2,
   advancedOperation3,
+  }
 };
 
 const { Random } = mockjs;

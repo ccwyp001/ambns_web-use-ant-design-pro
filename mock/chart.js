@@ -179,16 +179,19 @@ radarOriginData.forEach(item => {
 });
 
 const getFakeChartData = {
-  visitData,
-  visitData2,
-  salesData,
-  searchData,
-  offlineData,
-  offlineChartData,
-  salesTypeData,
-  salesTypeDataOnline,
-  salesTypeDataOffline,
-  radarData,
+  code: 10000,
+  result: {
+    visitData,
+    visitData2,
+    salesData,
+    searchData,
+    offlineData,
+    offlineChartData,
+    salesTypeData,
+    salesTypeDataOnline,
+    salesTypeDataOffline,
+    radarData,
+  }
 };
 
 export default {

@@ -23,7 +23,33 @@ export default [
     routes: [
       // dashboard
       { path: '/', redirect: '/list/ambul-manage' },
-
+      {
+        path: '/dashboard',
+        name: 'dashboard',
+        icon: 'dashboard',
+        routes: [
+          {
+            path: '/dashboard/new-dashboard',
+            name: 'new-dashboard',
+            component: './Dashboard/NewDashboard',
+          },
+          {
+            path: '/dashboard/analysis',
+            name: 'analysis',
+            component: './Dashboard/Analysis',
+          },
+          {
+            path: '/dashboard/monitor',
+            name: 'monitor',
+            component: './Dashboard/Monitor',
+          },
+          {
+            path: '/dashboard/workplace',
+            name: 'workplace',
+            component: './Dashboard/Workplace',
+          },
+        ],
+      },
       // list
       {
         path: '/list',
@@ -34,6 +60,12 @@ export default [
             path: '/list/ambul-manage',
             name: 'ambulmanage',
             component: './List/NewAmbulManage',
+          },
+          {
+            path: '/list/ambul-detail/:id',
+            name: 'amb_outd_detail',
+            hideInMenu: true,
+            component: './Profile/NewAmbulDetail',
           },
         ],
       },

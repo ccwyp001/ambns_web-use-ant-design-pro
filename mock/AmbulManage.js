@@ -25,7 +25,7 @@ let tableListDataSource = [];
 for (let i = 0; i < 46; i += 1) {
   tableListDataSource.push({
     key: `201902270${padding(i, 5)}`,
-    registered: Math.floor(Math.random() * 10) % 4 === 0,
+    registered: Math.floor(Math.random() * 10) % 4 === 0 ? '': '1',
     // href: 'https://ant.design',
     fileList: [{
       uid: '-1',
@@ -38,6 +38,9 @@ for (let i = 0; i < 46; i += 1) {
     clmc: `浙J ${padding(i, 5)}`,
     desc: '这是一段描述',
     yymc: '我也不知道这是哪',
+    real_out: new Date(`2019-03-${Math.floor(i / 2) + 1}`),
+    cancel_reason: Math.floor(Math.random() * 10) % 4 === 0 ? '来电退车': 'None',
+    tsqk: Math.floor(Math.random() * 10) % 4 === 0 ? '车到人走': 'None',
     status: Math.floor(Math.random() * 10) % 3,
     dispatchAt: new Date(`2017-07-${Math.floor(i / 2) + 1}`),
     departureAt: new Date(`2019-03-${Math.floor(i / 2) + 1}`),
@@ -128,13 +131,13 @@ function postRule(req, res, u, b) {
   }
 
   const body = (b && b.body) || req.body;
-  const { method, name, desc, key, fileList } = body;
+  const { method, name, desc, clid, lsh, fileList } = body;
 
   switch (method) {
     /* eslint no-case-declarations:0 */
     case 'update':
       tableListDataSource = tableListDataSource.map(item => {
-        if (item.key === key) {
+        if (item.lsh === lsh && item.clid === clid) {
           Object.assign(item, { ...body });
           return item;
         }

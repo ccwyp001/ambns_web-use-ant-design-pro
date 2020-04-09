@@ -19,3 +19,7 @@ export async function updateAmbulance(params = {}) {
 export async function getAmbulanceStations(params) {
   return request(`/api/v1/ambul_manage/stations?${stringify(params)}`);
 }
+
+export async function getAmbulanceDetail(params) {
+  return request(`/api/v1/ambul_detail?${stringify(params)}`);
+}

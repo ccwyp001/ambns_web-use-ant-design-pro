@@ -17,6 +17,7 @@ export default {
   'menu.list': '出车管理',
   'menu.list.searchtable': '查询表格',
   'menu.list.ambulmanage': '出车记录',
+  'menu.list.amb_outd_detail': '出车详情',
   'menu.list.basiclist': '标准列表',
   'menu.list.cardlist': '卡片列表',
   'menu.list.searchlist': '搜索列表',

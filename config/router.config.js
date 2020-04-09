@@ -44,9 +44,9 @@ export default [
             component: './Dashboard/Monitor',
           },
           {
-            path: '/dashboard/workplace',
-            name: 'workplace',
-            component: './Dashboard/Workplace',
+            path: '/dashboard/map-view',
+            name: 'map-view',
+            component: './Dashboard/MapView123',
           },
         ],
       },
@@ -62,7 +62,7 @@ export default [
             component: './List/NewAmbulManage',
           },
           {
-            path: '/list/ambul-detail/:id',
+            path: '/list/ambul-detail/:lsh/:clid',
             name: 'amb_outd_detail',
             hideInMenu: true,
             component: './Profile/NewAmbulDetail',

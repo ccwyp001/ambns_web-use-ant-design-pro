@@ -14,7 +14,7 @@ export default [
       },
     ],
   },
-  // app
+  // apps
   {
     path: '/',
     component: '../layouts/BasicLayout',

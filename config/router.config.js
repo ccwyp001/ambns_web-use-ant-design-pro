@@ -22,7 +22,7 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/list/ambul-manage' },
+      { path: '/', redirect: '/dashboard/map-view' },
       {
         path: '/dashboard',
         name: 'dashboard',

@@ -1,11 +1,5 @@
 import React from 'react';
-import MapView from '@/components/MapViewT.tsx';
 import MapTest from '@/components/MapTest.tsx';
+import MapviewT from '@/components/MapViewT.tsx'
 
-import GridContent from '@/components/PageHeaderWrapper/GridContent';
-
-// export default <GridContent>
-//   <MapView  />
-// </GridContent>;
-
-export default MapView;
+export default MapviewT;

@@ -52,24 +52,6 @@ export default [
       },
       // list
       {
-        path: '/list',
-        icon: 'table',
-        name: 'list',
-        routes: [
-          {
-            path: '/list/ambul-manage',
-            name: 'ambulmanage',
-            component: './List/NewAmbulManage',
-          },
-          {
-            path: '/list/ambul-detail/:lsh/:clid',
-            name: 'amb_outd_detail',
-            hideInMenu: true,
-            component: './Profile/NewAmbulDetail',
-          },
-        ],
-      },
-      {
         component: '404',
       },
     ],

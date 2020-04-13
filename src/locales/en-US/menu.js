@@ -38,4 +38,7 @@ export default {
   'menu.account.settings': 'Account Settings',
   'menu.account.trigger': 'Trigger Error',
   'menu.account.logout': 'Logout',
+  'menu.health_eye': 'Health Eye',
+  'menu.health_eye.map': 'Disease Map',
+  'menu.health_eye.config': 'System Configuration',
 };

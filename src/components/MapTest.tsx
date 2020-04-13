@@ -1,5 +1,6 @@
-import { LineLayer, AMapScene, MapboxScene } from '@antv/l7-react';
+import { AMapScene, LineLayer } from '@antv/l7-react';
 import React from 'react';
+
 export default React.memo(function Map() {
   const [data, setData] = React.useState();
   React.useEffect(() => {

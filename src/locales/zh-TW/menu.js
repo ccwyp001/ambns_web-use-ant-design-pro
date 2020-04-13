@@ -40,4 +40,7 @@ export default {
   'menu.exception.not-find': '404',
   'menu.exception.server-error': '500',
   'menu.exception.trigger': '触发错误',
+  'menu.health_eye': '疾病統計',
+  'menu.health_eye.map': '疾病地图',
+  'menu.health_eye.config': '系統配置',
 };

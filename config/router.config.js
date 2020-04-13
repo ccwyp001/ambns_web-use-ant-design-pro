@@ -29,11 +29,6 @@ export default [
         icon: 'dashboard',
         routes: [
           {
-            path: '/dashboard/new-dashboard',
-            name: 'new-dashboard',
-            component: './Dashboard/NewDashboard',
-          },
-          {
             path: '/dashboard/analysis',
             name: 'analysis',
             component: './Dashboard/Analysis',
@@ -43,14 +38,25 @@ export default [
             name: 'monitor',
             component: './Dashboard/Monitor',
           },
+        ],
+      },
+      {
+        path: '/health_eye',
+        name: 'health_eye',
+        icon: 'dashboard',
+        routes: [
           {
-            path: '/dashboard/map-view',
-            name: 'map-view',
-            component: './Dashboard/MapView123',
+            path: '/health_eye/map',
+            name: 'map',
+            component: './HealthEye/Map',
+          },
+          {
+            path: '/health_eye/config',
+            name: 'config',
+            component: './HealthEye/EyeConfig',
           },
         ],
       },
-      // list
       {
         component: '404',
       },

@@ -40,4 +40,7 @@ export default {
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
+  'menu.health_eye': '疾病统计',
+  'menu.health_eye.map': '疾病地图',
+  'menu.health_eye.config': '系统配置',
 };

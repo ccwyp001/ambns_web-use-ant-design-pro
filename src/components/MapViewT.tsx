@@ -67,7 +67,7 @@ function joinData(geodata: any, ncovData: any) {
   return geodata;
 }
 
-const World = React.memo(function Map() {
+const World = React.memo(function Map111() {
   const [data, setData] = React.useState();
   const [filldata, setfillData] = React.useState();
   const [popupInfo, setPopupInfo] = React.useState<{
@@ -105,7 +105,6 @@ const World = React.memo(function Map() {
   }
 
   return (
-    <>
       <MapboxScene
         option={{logoVisible: false}}
         map={{
@@ -121,7 +120,8 @@ const World = React.memo(function Map() {
           right: 0,
           bottom: 0,
           width: '100%',
-          height: '502px',
+          height: '100%',
+          maxHeight: '600px',
         }}
       >
         {popupInfo && (
@@ -222,7 +222,6 @@ const World = React.memo(function Map() {
           </PointLayer>,
         ]}
       </MapboxScene>
-    </>
   );
 });
 export default World

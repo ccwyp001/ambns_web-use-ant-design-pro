@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import Authorized from '@/utils/Authorized';
-import logo from '../assets/120logo_new.svg';
+import logo from '../assets/yhwj_logo.png';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';

@@ -76,8 +76,8 @@ export default {
     'primary-color': primaryColor,
   },
   externals: {
-    '@antv/data-set': 'DataSet',
-    bizcharts: 'BizCharts',
+    // '@antv/data-set': 'DataSet',
+    // bizcharts: 'BizCharts',
   },
   proxy: {
     '/api/': {

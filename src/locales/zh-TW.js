@@ -10,6 +10,7 @@ import settingDrawer from './zh-TW/settingDrawer';
 import settings from './zh-TW/settings';
 import pwa from './zh-TW/pwa';
 import component from './zh-TW/component';
+import healthEye from './zh-TW/healthEye';
 
 export default {
   'navBar.lang': '語言',
@@ -32,4 +33,5 @@ export default {
   ...settings,
   ...pwa,
   ...component,
+  ...healthEye,
 };

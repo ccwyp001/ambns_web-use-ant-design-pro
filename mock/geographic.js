@@ -1,6 +1,6 @@
 import city from './geographic/city.json';
 import province from './geographic/province.json';
-import yuhuan from './geographic/331083_gaode.json';
+import yuhuan from './geographic/331083_full.json';
 
 function getProvince(req, res) {
   return res.json(province);
@@ -11,7 +11,10 @@ function getCity(req, res) {
 }
 
 function getYH(req, res) {
-  return res.json(yuhuan);
+  return res.json({
+    code: 10000,
+    result: yuhuan,
+  });
 }
 
 export default {

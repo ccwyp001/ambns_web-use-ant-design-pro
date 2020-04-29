@@ -10,6 +10,7 @@ import settingDrawer from './pt-BR/settingDrawer';
 import settings from './pt-BR/settings';
 import pwa from './pt-BR/pwa';
 import component from './pt-BR/component';
+import healthEye from './pt-BR/healthEye';
 
 export default {
   'navBar.lang': 'Idiomas',
@@ -32,4 +33,5 @@ export default {
   ...settings,
   ...pwa,
   ...component,
+  ...healthEye,
 };

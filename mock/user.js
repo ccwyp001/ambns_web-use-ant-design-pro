@@ -4,7 +4,7 @@ export default {
   'GET /api/v1/user/current': {
     code: 10000,
     result: {
-      name: 'Serati Ma',
+      name: 'Small Big',
       // avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
       userid: '00000001',
       // phone: '0752-268888888',

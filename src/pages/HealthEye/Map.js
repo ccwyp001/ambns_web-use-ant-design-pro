@@ -18,6 +18,8 @@ import GenderDis from './SubComponents/GenderDis';
 import InsuranceDis from './SubComponents/InsuranceDis';
 import AgeDis from '@/pages/HealthEye/SubComponents/AgeDis';
 import TimeDis from '@/pages/HealthEye/SubComponents/TimeDis';
+import DiseaseDis from '@/pages/HealthEye/SubComponents/DiseaseDis';
+import OrgDis from '@/pages/HealthEye/SubComponents/OrgDis';
 // import CenterMap from '@/pages/HealthEye/SubComponents/CenterMap';
 
 const { Secured } = Authorized;
@@ -37,6 +39,14 @@ const havePermissionAsync = new Promise(resolve => {
 @connect(({ map, loading }) => ({
   map,
   loading: loading.models.map,
+  fetchingOrgData: loading.effects['map/fetchOrgData'],
+  fetchingTimeData: loading.effects['map/fetchTimeData'],
+  fetchingTopData: loading.effects['map/fetchTopData'],
+  fetchingInsData: loading.effects['map/fetchInsData'],
+  fetchingAgeData: loading.effects['map/fetchAgeData'],
+  fetchingGenData: loading.effects['map/fetchGenData'],
+  fetchingOccData: loading.effects['map/fetchOccData'],
+  fetchingGeoData: loading.effects['map/fetchGeoData'],
 }))
 class HealthMap extends Component {
   componentDidMount() {
@@ -57,6 +67,15 @@ class HealthMap extends Component {
       dispatch({
         type: 'map/fetchInsData',
       });
+      dispatch({
+        type: 'map/fetchTopData',
+      });
+      dispatch({
+        type: 'map/fetchOrgData',
+      });
+      dispatch({
+        type: 'map/fetchTimeData',
+      });
     });
   }
 
@@ -70,8 +89,12 @@ class HealthMap extends Component {
   }
 
   render() {
-    const { map, loading } = this.props;
-    const { occData, ageData, geo, genderData, InsData } = map;
+    const { map, loading, fetchingTopData,
+      fetchingOrgData,fetchingGeoData,
+      fetchingTimeData, fetchingInsData,
+      fetchingAgeData,fetchingGenData,fetchingOccData
+    } = this.props;
+    const { occData, ageData, geo, genderData, insData, topData, orgData, timeData } = map;
 
     return (
       <GridContent>
@@ -93,24 +116,24 @@ class HealthMap extends Component {
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>
             <Suspense fallback={null}>
               <Card
-                loading={loading}
+                loading={fetchingTopData}
                 title={<FormattedMessage id="app.health_map.DiseaseDis" defaultMessage="疾病分布" />}
                 style={{ marginBottom: 16 }}
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <InsuranceDis InsData={InsData} height={336} />
+                <DiseaseDis topData={topData} height={336} />
               </Card>
             </Suspense>
             <Suspense fallback={null}>
               <Card
-                loading={loading}
+                loading={fetchingOrgData}
                 title={<FormattedMessage id="app.health_map.OrgDis" defaultMessage="机构分布" />}
                 style={{ marginBottom: 16 }}
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <InsuranceDis InsData={InsData} height={336} />
+                <OrgDis orgData={orgData} height={336} />
               </Card>
             </Suspense>
           </Col>
@@ -119,7 +142,7 @@ class HealthMap extends Component {
               <Col xl={16} lg={24} md={24} sm={24} xs={24} style={{ marginBottom: 16 }}>
                 <Suspense fallback={null}>
                   <Card
-                    loading={loading}
+                    loading={fetchingGeoData}
                     title={
                       <FormattedMessage
                         id="app.health_map.map"
@@ -137,7 +160,7 @@ class HealthMap extends Component {
               <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                 <Suspense fallback={null}>
                   <Card
-                    loading={loading}
+                    loading={fetchingOccData}
                     title={
                       <FormattedMessage
                         id="app.health_map.OccupationDis"
@@ -152,13 +175,13 @@ class HealthMap extends Component {
                 </Suspense>
                 <Suspense fallback={null}>
                   <Card
-                    loading={loading}
+                    loading={fetchingInsData}
                     title={<FormattedMessage id="app.health_map.InsuranceDis" defaultMessage="Insurance Distribution" />}
                     style={{ marginBottom: 16 }}
                     bodyStyle={{ textAlign: 'center' }}
                     bordered={false}
                   >
-                    <InsuranceDis InsData={InsData} />
+                    <InsuranceDis InsData={insData} />
                   </Card>
                 </Suspense>
               </Col>
@@ -168,7 +191,7 @@ class HealthMap extends Component {
                 <Suspense fallback={null}>
                   <AgeDis
                     ageData={ageData}
-                    loading={loading}
+                    loading={fetchingAgeData}
                     height={151}
                   />
                 </Suspense>
@@ -176,7 +199,7 @@ class HealthMap extends Component {
               <Col xl={8} lg={24} sm={24} xs={24} style={{ marginBottom: 16 }}>
                 <Suspense fallback={null}>
                   <Card
-                    loading={loading}
+                    loading={fetchingGenData}
                     title={
                       <FormattedMessage
                         id="app.health_map.GenderDis"
@@ -196,21 +219,16 @@ class HealthMap extends Component {
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col xl={18} lg={24} sm={24} xs={24} style={{ marginBottom: 16 }}>
-            <Suspense fallback={null}>
-              <TimeDis height={163} />
-            </Suspense>
-          </Col>
-          <Col xl={6} lg={24} md={24} sm={24} xs={24}>
+          <Col xl={24} lg={24} sm={24} xs={24} style={{ marginBottom: 16 }}>
             <Suspense fallback={null}>
               <Card
-                loading={loading}
-                title={<FormattedMessage id="app.health_map.InsuranceDis" defaultMessage="Insurance Distribution" />}
+                loading={fetchingTimeData}
+                title={<FormattedMessage id="app.health_map.TimeDis" defaultMessage="时间分布" />}
                 style={{ marginBottom: 16 }}
-                bodyStyle={{ textAlign: 'center' }}
+                // bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <InsuranceDis InsData={InsData} />
+                <TimeDis height={163} timeData={timeData} />
               </Card>
             </Suspense>
           </Col>

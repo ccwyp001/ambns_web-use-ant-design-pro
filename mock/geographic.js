@@ -1,6 +1,7 @@
 import city from './geographic/city.json';
 import province from './geographic/province.json';
 import yuhuan from './geographic/331083_full.json';
+import yhxzq from './geographic/yhxzq.json';
 
 function getProvince(req, res) {
   return res.json(province);

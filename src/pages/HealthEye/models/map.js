@@ -1,5 +1,13 @@
 import { queryYHGeo } from '@/services/geographic';
-import {queryAgeData, queryOccData, queryGenData, queryInsData} from '@/services/healthEyeSvc';
+import {
+  queryAgeData,
+  queryOccData,
+  queryGenData,
+  queryInsData,
+  queryTopData,
+  queryOrgData,
+  queryTimeData,
+} from '@/services/healthEyeSvc';
 
 export default {
   namespace: 'map',
@@ -9,7 +17,10 @@ export default {
     occData: [],
     ageData:[],
     genderData: [],
-    InsData: [],
+    insData: [],
+    topData:[],
+    orgData:[],
+    timeData:[],
   },
 
   effects: {
@@ -22,12 +33,39 @@ export default {
         },
       })
     },
+    *fetchOrgData(_, { call, put }) {
+      const response = yield call(queryOrgData);
+      yield put({
+        type: 'save',
+        payload: {
+          orgData: response,
+        },
+      })
+    },
+    *fetchTimeData(_, { call, put }) {
+      const response = yield call(queryTimeData);
+      yield put({
+        type: 'save',
+        payload: {
+          timeData: response,
+        },
+      })
+    },
+    *fetchTopData(_, { call, put }) {
+      const response = yield call(queryTopData);
+      yield put({
+        type: 'save',
+        payload: {
+          topData: response,
+        },
+      })
+    },
     *fetchInsData(_, { call, put }) {
       const response = yield call(queryInsData);
       yield put({
         type: 'save',
         payload: {
-          InsData: response,
+          insData: response,
         },
       })
     },
@@ -75,7 +113,10 @@ export default {
         occData: [],
         ageData:[],
         genderData:[],
-        InsData: [],
+        insData: [],
+        topData: [],
+        orgData:[],
+        timeData:[],
       };
     },
   },

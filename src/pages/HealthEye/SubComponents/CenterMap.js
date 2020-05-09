@@ -11,10 +11,12 @@ import {
   Control,
 } from '@antv/l7-react';
 import * as React from 'react';
+import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 
 const CenterMap = React.memo(({ data }) => {
   const [popupInfo, setPopupInfo] = React.useState();
   const showPopup = args => {
+    // console.log(args);
     setPopupInfo({
       lnglat: args.lngLat,
       feature: args.feature,
@@ -66,13 +68,14 @@ const CenterMap = React.memo(({ data }) => {
             active={{
               option: { color: '#d28329'}
             }}
-            select={{
-              option: { color: '#ff1642' }
-            }}
+            // select={{
+            //   option: { color: '#ff1642' }
+            // }}
           >
             <LayerEvent type='mousemove' handler={showPopup} />
             <LayerEvent type='mouseout' handler={()=>{setPopupInfo(undefined)}} />
           </PolygonLayer>,
+          // 图层边界
           <LineLayer
             key="3"
             source={{data}}
@@ -92,10 +95,10 @@ const CenterMap = React.memo(({ data }) => {
               opacity: 1
             }}
           />,
-
-          // <Control key='6' type='zoom' position='bottomleft' />
+          <LabelControl key="9" info={popupInfo} />
         ]
       }
+
       {popupInfo && [
         <Popup
           key='1'
@@ -107,19 +110,7 @@ const CenterMap = React.memo(({ data }) => {
         >
           {popupInfo.feature.properties.name}
         </Popup>,
-        <CustomControl
-          key='4'
-          position="bottomright"
-        >
-          <ul
-            key="5"
-          >
-            <li>现有确诊:1</li>
-            <li>累计确诊:2</li>
-            <li>治愈:3</li>
-            <li>死亡:4</li>
-          </ul>
-        </CustomControl>
+
       ]}
     </MapboxScene>
   );

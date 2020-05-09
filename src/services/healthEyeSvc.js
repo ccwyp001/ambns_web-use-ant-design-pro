@@ -15,3 +15,16 @@ export async function queryGenData() {
 export async function queryInsData() {
   return request('/api/v1/health_eye/data/ins_dis');
 }
+
+export async function queryTopData() {
+  return request('/api/v1/health_eye/data/top');
+}
+
+export async function queryOrgData() {
+  return request('/api/v1/health_eye/data/org_dis');
+}
+
+export async function queryTimeData() {
+  return request('/api/v1/health_eye/data/time_dis');
+}
+

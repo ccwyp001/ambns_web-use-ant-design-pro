@@ -12,8 +12,9 @@ import {
 } from '@antv/l7-react';
 import * as React from 'react';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
+import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
 
-const CenterMap = React.memo(({ data }) => {
+const CenterMap = React.memo(({ data, townData }) => {
   const [popupInfo, setPopupInfo] = React.useState();
   const showPopup = args => {
     // console.log(args);
@@ -68,12 +69,15 @@ const CenterMap = React.memo(({ data }) => {
             active={{
               option: { color: '#d28329'}
             }}
+            onLayerLoaded={(layer, scene) => {
+              layer.setActive(1)
+            }}
             // select={{
             //   option: { color: '#ff1642' }
             // }}
           >
-            <LayerEvent type='mousemove' handler={showPopup} />
-            <LayerEvent type='mouseout' handler={()=>{setPopupInfo(undefined)}} />
+            <LayerEvent type='click' handler={showPopup} />
+            <LayerEvent type='unclick' handler={()=>{setPopupInfo(undefined)}} />
           </PolygonLayer>,
           // 图层边界
           <LineLayer
@@ -95,23 +99,56 @@ const CenterMap = React.memo(({ data }) => {
               opacity: 1
             }}
           />,
-          <LabelControl key="9" info={popupInfo} />
+          <PointLayer
+            key='4'
+            source={{
+              data
+            }}
+            color={{
+              value: '#fff',
+            }}
+            shape={{
+              field: 'name',
+              values: 'text',
+            }}
+            size={{
+              values: 12,
+            }}
+            style={{
+              opacity: 1,
+              strokeOpacity: 1,
+              strokeWidth: 0,
+            }}
+          />,
+          <LabelControl
+            position='topright'
+            key="19"
+            style={{position: 'relative'}}
+          >
+            <TownDis townData={townData} />
+          </LabelControl>,
         ]
       }
-
       {popupInfo && [
-        <Popup
-          key='1'
-          lnglat={popupInfo.lnglat}
-          option={{
-            closeButton: false,
-            offsets: [0,10],
-          }}
-        >
-          {popupInfo.feature.properties.name}
-        </Popup>,
+        // <Popup
+        //   key='1'
+        //   lnglat={popupInfo.lnglat}
+        //   option={{
+        //     closeButton: false,
+        //     offsets: [0,10],
+        //   }}
+        // >
+        //   {popupInfo.feature.properties.name}
+        // </Popup>,
+        // <LabelControl
+        //   key="9"
+        // >
+        //   {popupInfo.feature.properties.name}
+        // </LabelControl>,
+      ] || [
 
-      ]}
+          ]
+      }
     </MapboxScene>
   );
 });

@@ -1,6 +1,19 @@
 @import '~antd/lib/style/themes/default.less';
 @import '~@/utils/utils.less';
 
+.iconGroup {
+  i {
+    margin-left: 16px;
+    color: @text-color-secondary;
+    cursor: pointer;
+    transition: color 0.32s;
+    &:hover {
+      color: @text-color;
+    }
+  }
+}
+
+
 .mapChart {
   height: 512px;
   padding-top: 8px;

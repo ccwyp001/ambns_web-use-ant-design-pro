@@ -1,6 +1,6 @@
 import city from './geographic/city.json';
 import province from './geographic/province.json';
-import yuhuan from './geographic/331083_full.json';
+import yuhuan from './geographic/331083_light_acc500.json';
 import yhxzq from './geographic/yhxzq.json';
 
 function getProvince(req, res) {

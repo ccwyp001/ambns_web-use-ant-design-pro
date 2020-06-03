@@ -7,6 +7,7 @@ import {
   queryTopData,
   queryOrgData,
   queryTimeData,
+  queryTownData,
 } from '@/services/healthEyeSvc';
 
 export default {
@@ -21,6 +22,7 @@ export default {
     topData:[],
     orgData:[],
     timeData:[],
+    townData:[],
   },
 
   effects: {
@@ -39,6 +41,15 @@ export default {
         type: 'save',
         payload: {
           orgData: response,
+        },
+      })
+    },
+    *fetchTownData(_, { call, put }) {
+      const response = yield call(queryTownData);
+      yield put({
+        type: 'save',
+        payload: {
+          townData: response,
         },
       })
     },
@@ -117,6 +128,7 @@ export default {
         topData: [],
         orgData:[],
         timeData:[],
+        townData:[],
       };
     },
   },

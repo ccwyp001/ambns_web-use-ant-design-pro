@@ -28,3 +28,6 @@ export async function queryTimeData() {
   return request('/api/v1/health_eye/data/time_dis');
 }
 
+export async function queryTownData() {
+  return request('/api/v1/health_eye/data/town_dis');
+}

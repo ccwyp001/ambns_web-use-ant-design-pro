@@ -2,7 +2,7 @@ import React, { Component, Suspense } from 'react';
 import { AsyncLoadBizCharts } from '@/components/Charts/AsyncLoadBizCharts';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Row, Col, Card, Tooltip } from 'antd';
+import { Row, Col, Card, Tooltip, Radio, Dropdown, Icon } from 'antd';
 import { Pie, WaterWave, Gauge, TagCloud } from '@/components/Charts';
 import NumberInfo from '@/components/NumberInfo';
 import CountDown from '@/components/CountDown';
@@ -49,33 +49,15 @@ const havePermissionAsync = new Promise(resolve => {
   fetchingGeoData: loading.effects['map/fetchGeoData'],
 }))
 class HealthMap extends Component {
+
+  state = {
+    playOrNot: false,
+  };
+
   componentDidMount() {
-    const { dispatch } = this.props;
+
     this.reqRef = requestAnimationFrame(() => {
-      dispatch({
-        type: 'map/fetchOccData',
-      });
-      dispatch({
-        type: 'map/fetchGeoData',
-      });
-      dispatch({
-        type: 'map/fetchAgeData',
-      });
-      dispatch({
-        type: 'map/fetchGenData',
-      });
-      dispatch({
-        type: 'map/fetchInsData',
-      });
-      dispatch({
-        type: 'map/fetchTopData',
-      });
-      dispatch({
-        type: 'map/fetchOrgData',
-      });
-      dispatch({
-        type: 'map/fetchTimeData',
-      });
+      this.dispatchAll()
     });
   }
 
@@ -88,13 +70,61 @@ class HealthMap extends Component {
     // clearTimeout(this.timeoutId);
   }
 
+  playRound=()=> {
+    const {playOrNot} = this.state;
+    this.setState({
+      playOrNot: !playOrNot,
+      });
+  };
+
+  dispatchAll(payload={}) {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'map/fetchOccData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchGeoData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchAgeData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchGenData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchInsData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchTopData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchOrgData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchTimeData',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchTownData',
+      payload,
+    });
+  }
+
   render() {
     const { map, loading, fetchingTopData,
       fetchingOrgData,fetchingGeoData,
       fetchingTimeData, fetchingInsData,
       fetchingAgeData,fetchingGenData,fetchingOccData
     } = this.props;
-    const { occData, ageData, geo, genderData, insData, topData, orgData, timeData } = map;
+    const { occData, ageData, geo, genderData, insData, topData, orgData, timeData, townData } = map;
+    const { playOrNot } = this.state;
 
     return (
       <GridContent>
@@ -121,6 +151,13 @@ class HealthMap extends Component {
                 style={{ marginBottom: 16 }}
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
+                extra={
+                  <div className={styles.salesCardExtra}>
+                    <span className={styles.iconGroup} onClick={this.playRound}>
+                      {playOrNot ? <Icon type="pause-circle" /> : <Icon type="play-circle" />}
+                    </span>
+                  </div>
+                }
               >
                 <DiseaseDis topData={topData} height={336} />
               </Card>
@@ -152,7 +189,7 @@ class HealthMap extends Component {
                     bordered={false}
                   >
                     <div className={styles.mapChart}>
-                      <CenterMap data={geo} />
+                      <CenterMap data={geo} townData={townData} />
                     </div>
                   </Card>
                 </Suspense>

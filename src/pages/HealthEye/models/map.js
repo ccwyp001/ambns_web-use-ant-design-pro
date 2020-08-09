@@ -8,6 +8,7 @@ import {
   queryOrgData,
   queryTimeData,
   queryTownData,
+  queryIcdData,
 } from '@/services/healthEyeSvc';
 
 export default {
@@ -23,9 +24,20 @@ export default {
     orgData:[],
     timeData:[],
     townData:[],
+    icdList:[],
   },
 
   effects: {
+    *fetchIcdList({ payload }, { call, put }) {
+      const response = yield call(queryIcdData, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          icdList: response,
+        },
+      })
+    },
+
     *fetchGeoData(_, { call, put }) {
       const response = yield call(queryYHGeo);
       yield put({
@@ -71,8 +83,8 @@ export default {
         },
       })
     },
-    *fetchInsData(_, { call, put }) {
-      const response = yield call(queryInsData);
+    *fetchInsData({ payload }, { call, put }) {
+      const response = yield call(queryInsData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -129,6 +141,7 @@ export default {
         orgData:[],
         timeData:[],
         townData:[],
+        icdList:[],
       };
     },
   },

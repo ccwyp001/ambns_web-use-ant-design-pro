@@ -47,12 +47,26 @@ const havePermissionAsync = new Promise(resolve => {
   fetchingGenData: loading.effects['map/fetchGenData'],
   fetchingOccData: loading.effects['map/fetchOccData'],
   fetchingGeoData: loading.effects['map/fetchGeoData'],
+  fetchingIcdList: loading.effects['map/fetchIcdList'],
 }))
 class HealthMap extends Component {
 
   state = {
     playOrNot: false,
   };
+
+  colors = [
+    '#5B8FF9',
+    '#5AD8A6',
+    '#5D7092',
+    '#F6BD16',
+    '#E8684A',
+    '#6DC8EC',
+    '#9270CA',
+    '#FF9D4D',
+    '#269A99',
+    '#FF99C3',
+  ];
 
   componentDidMount() {
 
@@ -77,7 +91,30 @@ class HealthMap extends Component {
       });
   };
 
-  dispatchAll(payload={}) {
+  handleSearch = (params) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'map/fetchInsData',
+      payload: params,
+    });
+    // this.dispatchAll();
+  };
+
+  handleIcdList = (value) => {
+    const { dispatch } = this.props;
+    if (value.length < 2){
+      return
+    }
+    dispatch({
+      type: 'map/fetchIcdList',
+      payload: {
+        q: value
+      },
+    });
+  };
+
+
+  dispatchAll=(payload={})=> {
     const { dispatch } = this.props;
     dispatch({
       type: 'map/fetchOccData',
@@ -115,16 +152,24 @@ class HealthMap extends Component {
       type: 'map/fetchTownData',
       payload,
     });
-  }
+  };
 
   render() {
     const { map, loading, fetchingTopData,
       fetchingOrgData,fetchingGeoData,
       fetchingTimeData, fetchingInsData,
-      fetchingAgeData,fetchingGenData,fetchingOccData
+      fetchingAgeData,fetchingGenData,fetchingOccData,
+      fetchingIcdList,
     } = this.props;
-    const { occData, ageData, geo, genderData, insData, topData, orgData, timeData, townData } = map;
+    const { occData, ageData, geo, genderData, insData,
+      topData, orgData, timeData, townData, icdList } = map;
     const { playOrNot } = this.state;
+    const colorMap = {};
+    topData.map((item, index) =>{
+      colorMap[item.x] = this.colors[index];
+      return item;
+      }
+    );
 
     return (
       <GridContent>
@@ -137,7 +182,13 @@ class HealthMap extends Component {
               bordered={false}
             >
               <div className={styles.tableListForm}>
-                <ZoneSearch />
+                <ZoneSearch
+                  handleSearch={this.handleSearch}
+                  handleFormReset={this.handleSearch}
+                  handleIcdList={this.handleIcdList}
+                  fetching={fetchingIcdList}
+                  icdList={icdList}
+                />
               </div>
             </Card>
           </Col>
@@ -159,7 +210,12 @@ class HealthMap extends Component {
                   </div>
                 }
               >
-                <DiseaseDis topData={topData} height={336} />
+                <DiseaseDis
+                  topData={topData}
+                  height={336}
+                  playOrNot={playOrNot}
+                  colorMap={colorMap}
+                />
               </Card>
             </Suspense>
             <Suspense fallback={null}>
@@ -170,7 +226,11 @@ class HealthMap extends Component {
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <OrgDis orgData={orgData} height={336} />
+                <OrgDis
+                  orgData={orgData}
+                  height={336}
+                  colorMap={colorMap}
+                />
               </Card>
             </Suspense>
           </Col>
@@ -189,7 +249,11 @@ class HealthMap extends Component {
                     bordered={false}
                   >
                     <div className={styles.mapChart}>
-                      <CenterMap data={geo} townData={townData} />
+                      <CenterMap
+                        data={geo}
+                        townData={townData}
+                        colorMap={colorMap}
+                      />
                     </div>
                   </Card>
                 </Suspense>

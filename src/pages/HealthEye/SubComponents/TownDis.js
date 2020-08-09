@@ -32,7 +32,7 @@ function mapSum(d) {
 }
 
 
-class TownDis extends React.Component {
+class TownDis extends React.PureComponent {
   static defaultProps = {
     townData: [],
     height: 425
@@ -44,7 +44,7 @@ class TownDis extends React.Component {
   }
 
   render() {
-    const { height, townData:data } = this.props;
+    const { height, townData:data, colorMap } = this.props;
 
     const ds = new DataSet();
     const dv = ds.createView().source(data);
@@ -70,7 +70,7 @@ class TownDis extends React.Component {
       })
       .transform({
         type: 'fold',
-        fields: data[0] && Object.keys(data[0].icds),
+        fields: data[0] && Object.keys(data[0].icds) || ['x'],
         key: 'icdCode',
         value: 'value',
       })
@@ -101,7 +101,13 @@ class TownDis extends React.Component {
           />
           <Axis name="value" visible={false} />
           <Tooltip />
-          <Geom type="intervalStack" position="x*value" color='icdCode' />
+          <Geom
+            type="intervalStack"
+            position="x*value"
+            color={['icdCode', (item) =>{
+              return colorMap[item]
+            }]}
+          />
         </Chart>
       </Card>
     );

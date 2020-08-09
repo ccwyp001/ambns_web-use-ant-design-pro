@@ -118,7 +118,11 @@ function getFakeList(req, res) {
 
   const result = fakeList(count);
   sourceData = result;
-  return res.json(result);
+  const result2 =  {
+    code: 10000,
+    result: sourceData
+  };
+  return res.json(result2);
 }
 
 function postFakeList(req, res) {

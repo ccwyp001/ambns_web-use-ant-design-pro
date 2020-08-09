@@ -47,6 +47,7 @@ class OrgDis extends React.Component {
 
   render() {
     const { height, data } = this.state;
+    const { colorMap } = this.props;
 
     const ds = new DataSet();
     const dv = ds.createView().source(data);
@@ -72,7 +73,7 @@ class OrgDis extends React.Component {
       })
       .transform({
         type: 'fold',
-        fields: data[0] && Object.keys(data[0].icds),
+        fields: data[0] && Object.keys(data[0].icds) || ['x'],
         key: 'icdCode',
         value: 'value',
       })
@@ -90,7 +91,13 @@ class OrgDis extends React.Component {
           />
           <Axis name="value" visible={false} />
           <Tooltip />
-          <Geom type="intervalStack" position="x*value" color='icdCode' />
+          <Geom
+            type="intervalStack"
+            position="x*value"
+            color={['icdCode', (item) =>{
+              return colorMap[item]
+            }]}
+          />
 
         </Chart>
       </div>

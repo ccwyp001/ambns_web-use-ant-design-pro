@@ -7,6 +7,42 @@ export default {
       name: 'Small Big',
       // avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
       userid: '00000001',
+      geographic: {
+        province: {
+          label: '浙江省',
+          key: '330000',
+        },
+        city: {
+          label: '杭州市',
+          key: '330100',
+        },
+      },
+      tags: [
+        {
+          key: '0',
+          label: '很有想法的',
+        },
+        {
+          key: '1',
+          label: '专注设计',
+        },
+        {
+          key: '2',
+          label: '辣~',
+        },
+        {
+          key: '3',
+          label: '大长腿',
+        },
+        {
+          key: '4',
+          label: '川妹子',
+        },
+        {
+          key: '5',
+          label: '海纳百川',
+        },
+      ],
       // phone: '0752-268888888',
     }
   },

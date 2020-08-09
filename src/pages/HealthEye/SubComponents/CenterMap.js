@@ -14,7 +14,7 @@ import * as React from 'react';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
 
-const CenterMap = React.memo(({ data, townData }) => {
+const CenterMap = React.memo(({ data, townData, colorMap }) => {
   const [popupInfo, setPopupInfo] = React.useState();
   const showPopup = args => {
     // console.log(args);
@@ -57,8 +57,13 @@ const CenterMap = React.memo(({ data, townData }) => {
             color={{
               field: 'name',
               values: [
-                '#1d3969',
-              ]
+                '#732200',
+                '#CC3D00',
+                '#FF6619',
+                '#FF9466',
+                '#FFC1A6',
+                '#FCE2D7',
+              ].reverse()
             }}
             shape={{
               values: 'fill'
@@ -85,7 +90,7 @@ const CenterMap = React.memo(({ data, townData }) => {
             source={{data}}
             color={{
               values: [
-                '#38b5d9',
+                '#fff',
               ]}}
             size={{
               values: 1,
@@ -105,7 +110,7 @@ const CenterMap = React.memo(({ data, townData }) => {
               data
             }}
             color={{
-              value: '#fff',
+              value: '#3e3e3e',
             }}
             shape={{
               field: 'name',
@@ -118,6 +123,9 @@ const CenterMap = React.memo(({ data, townData }) => {
               opacity: 1,
               strokeOpacity: 1,
               strokeWidth: 0,
+              textAllowOverlap: false,
+              stroke: '#000',
+              padding: [ 5, 5 ],
             }}
           />,
           <LabelControl
@@ -125,7 +133,7 @@ const CenterMap = React.memo(({ data, townData }) => {
             key="19"
             style={{position: 'relative'}}
           >
-            <TownDis townData={townData} />
+            <TownDis townData={townData} colorMap={colorMap} />
           </LabelControl>,
         ]
       }

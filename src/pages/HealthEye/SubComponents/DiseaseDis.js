@@ -1,6 +1,7 @@
 import React from 'react';
 import { Axis, Chart, Coord, Geom, Guide, Label, Tooltip } from 'bizcharts';
 import DataSet from '@antv/data-set';
+import { parse } from 'path-to-regexp';
 
 class DiseaseDis extends React.Component {
   static defaultProps = {
@@ -8,16 +9,58 @@ class DiseaseDis extends React.Component {
     height: 188
   };
 
+  timer = 0;
+
+  interval = 1000;
+
   constructor(props) {
     super(props);
     this.state = {
       height: props.height,
       data: props.topData,
+      displayFlag: props.topData.length - 1,
     }
   }
 
+  componentDidMount() {
+    this.tick();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    clearTimeout(this.timer);
+    this.tick();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+
+  tick = () => {
+    const { playOrNot } = this.props;
+    const { data } = this.state;
+    let { displayFlag } = this.state;
+    this.timer = setTimeout(() => {
+      if (playOrNot) {
+        if (displayFlag > 0){
+          displayFlag -= 1;
+        } else { displayFlag = data.length - 1;}
+        this.setState(
+          {
+            displayFlag,
+          },
+          () => {
+            this.tick();
+          }
+        )
+      } else {
+        // this.tick();
+      }
+    }, this.interval);
+  };
+
   render() {
-    const { height, data } = this.state;
+    const { playOrNot, colorMap } = this.props;
+    const { height, data, displayFlag } = this.state;
     const ds = new DataSet();
     const dv = ds.createView().source(data);
     dv.source(data).transform({
@@ -43,23 +86,26 @@ class DiseaseDis extends React.Component {
           />
           <Axis name="y" visible={false} />
           <Tooltip showTitle={false} />
-          <Guide>
-            <Guide.Region
-              top={false} // 指定 giude 是否绘制在 canvas 最上层，默认为 false, 即绘制在最下层
-              start={(e)=>([-0.4, 'start'])} // 辅助框起始位置，值为原始数据值，支持 callback
-              end={(e)=>([0.4, 'end'])}// 辅助框结束位置，值为原始数据值，支持 callback
-              style={{
+          { playOrNot ?
+            <Guide>
+              <Guide.Region
+                top={false} // 指定 giude 是否绘制在 canvas 最上层，默认为 false, 即绘制在最下层
+                start={(e)=>([parseInt(displayFlag, 10)-0.4, 'start'])} // 辅助框起始位置，值为原始数据值，支持 callback
+                end={(e)=>([parseInt(displayFlag, 10)+0.4, 'end'])}// 辅助框结束位置，值为原始数据值，支持 callback
+                style={{
               lineWidth: 0, // 辅助框的边框宽度
               fill: '#ff1151', // 辅助框填充的颜色
               fillOpacity: 0.3, // 辅助框的背景透明度
               stroke: '#ccc' // 辅助框的边框颜色设置
-            }} // 辅助框的图形样式属性
-            />
-          </Guide>
+            }}
+              />
+            </Guide>: null}
           <Geom
             type="interval"
             position="x*y"
-            color="x"
+            color={['x', (item) =>{
+              return colorMap[item]
+            }]}
             select={[true, {
               style: {
                 fill: '#E8684A',

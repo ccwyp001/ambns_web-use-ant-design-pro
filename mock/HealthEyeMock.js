@@ -1,8 +1,24 @@
 import { parse } from 'url';
+import icdList from './GetIcdList.json';
 
 // 左补0
 function padding(num, length) {
   return (Array(length).join('0') + num).slice(-length);
+}
+
+// 从数组中随机取几个元素
+function getRandomArrayElements(arr, count) {
+  let i = arr.length;
+  const shuffled = arr.slice(0);
+  const min = i - count;
+  while (i > min) {
+    i -= 1;
+    const index = Math.floor((i + 1) * Math.random());
+    const temp = shuffled[index];
+    shuffled[index] = shuffled[i];
+    shuffled[i] = temp;
+  }
+  return shuffled.slice(min);
 }
 
 const HealthDataSource = [];
@@ -27,6 +43,72 @@ for (let i=0; i <30000;i+=1){
     payType: Math.floor(Math.random() * 10) % 4,
     cost: Math.floor(Math.random() * 1000) + Math.ceil(Math.random() * 100) / 100,
   })
+}
+const Ages = [];
+for (let i=0; i<100; i+=1){
+  Ages.push(i)
+}
+const AgeGroupDataSource = [];
+for (let i=0; i < 20; i+=1){
+  AgeGroupDataSource.push({
+    id: i,
+    name: `age group ${i}`,
+    group: getRandomArrayElements(Ages, Math.floor(Math.random() * 100) % 15 + 10).sort(
+      (prev, next) => {return prev - next}
+    ),
+    updateAt: new Date(
+      `201${Math.floor(Math.random() * 10) % 4}-${Math.floor(Math.random() * 10) % 12 + 1}-${Math.floor(Math.random() * 10) % 30 + 1}`),
+    disabled: Math.floor(Math.random() * 10) % 2 === 0 ? '0': '1',
+  })
+}
+
+function getAgeGroup(req, res, u) {
+  let url = u;
+  if (!url || Object.prototype.toString.call(url) !== '[object String]') {
+    url = req.url; // eslint-disable-line
+  }
+
+  const params = parse(url, true).query;
+
+  let AgeSource = AgeGroupDataSource;
+
+  const result = {
+    code: 10000,
+    result: AgeSource
+  };
+  return res.json(result)
+}
+
+function postAgeGroup(req, res) {
+  const { /* url = '', */ body } = req;
+  // const params = getUrlParams(url);
+  const { method, id } = body;
+  // const count = (params.count * 1) || 20;
+  let result = AgeGroupDataSource;
+
+  switch (method) {
+    case 'delete':
+      result = result.filter(item => item.id !== id);
+      break;
+    case 'update':
+      result.forEach((item, i) => {
+        if (item.id === id) {
+          result[i] = Object.assign(item, body);
+        }
+      });
+      break;
+    case 'post':
+      result.unshift({
+        body,
+        id: `fake-list-${result.length}`,
+        createdAt: new Date().getTime(),
+      });
+      break;
+    default:
+      break;
+  }
+
+  return res.json(result);
 }
 
 
@@ -346,6 +428,29 @@ function returnAll(req, res, u) {
 }
 
 
+function getIcdList(req, res, u) {
+  let url = u;
+  if (!url || Object.prototype.toString.call(url) !== '[object String]') {
+    url = req.url; // eslint-disable-line
+  }
+  const params = parse(url, true).query;
+  let icdListSource = icdList;
+
+  if (params.q) {
+    const q = params.q;
+    icdListSource = icdListSource.filter(
+      data => data.id.indexOf(q) > -1 || data.text.indexOf(q) > -1 ||
+        data.inputcode1.indexOf(q) > -1 || data.inputcode2.indexOf(q) > -1 )
+  }
+
+  const result = {
+    code: 10000,
+    result: icdListSource,
+  };
+  return res.json(result);
+
+}
+
 
 export default {
   'GET /api/v1/health_eye/data/all': returnAll,
@@ -357,5 +462,7 @@ export default {
   'GET /api/v1/health_eye/data/org_dis': getOrgDis,
   'GET /api/v1/health_eye/data/time_dis': getTimeDis,
   'GET /api/v1/health_eye/data/town_dis': getTownDis,
-
+  'GET /api/v1/health_eye/data/icd_list': getIcdList,
+  'GET /api/v1/health_eye/config/age_group': getAgeGroup,
+  'POST /api/v1/health_eye/config/age_group': postAgeGroup,
 }

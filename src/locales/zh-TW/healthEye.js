@@ -6,4 +6,5 @@ export default {
   'app.health_map.GenderDis.Female': '女',
   'app.health_map.AgeDis': '年齡分佈',
   'app.health_map.InsuranceDis': '險種分佈',
+  'app.health_map.DiseaseDis': '疾病分佈',
 };

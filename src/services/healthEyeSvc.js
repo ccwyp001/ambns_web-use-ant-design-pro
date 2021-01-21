@@ -18,7 +18,7 @@ export async function queryInsData(params) {
 }
 
 export async function queryAgeGroup(params) {
-  return request(`/api/v1/health_eye/config/age_group?${stringify(params)}`);
+  return request(`/api/v1/health_eye/config/age_groups?${stringify(params)}`);
 }
 
 export async function queryTopData() {
@@ -38,5 +38,9 @@ export async function queryTownData() {
 }
 
 export async function queryIcdData(params) {
-  return request(`/api/v1/health_eye/data/icd_list?${stringify(params)}`);
+  return request(`/api/v1/health_eye/icd10_list/_search?${stringify(params)}`);
+}
+
+export async function queryGeoData(params) {
+  return request(`/api/v1/health_eye/geo?${stringify(params)}`);
 }

@@ -1,5 +1,6 @@
 import { parse } from 'url';
 import icdList from './GetIcdList.json';
+import yuhuan from './geographic/331083_light_acc500.json';
 
 // 左补0
 function padding(num, length) {
@@ -60,6 +61,13 @@ for (let i=0; i < 20; i+=1){
       `201${Math.floor(Math.random() * 10) % 4}-${Math.floor(Math.random() * 10) % 12 + 1}-${Math.floor(Math.random() * 10) % 30 + 1}`),
     disabled: Math.floor(Math.random() * 10) % 2 === 0 ? '0': '1',
   })
+}
+
+function getYH(req, res) {
+  return res.json({
+    code: 10000,
+    result: yuhuan,
+  });
 }
 
 function getAgeGroup(req, res, u) {
@@ -462,7 +470,8 @@ export default {
   'GET /api/v1/health_eye/data/org_dis': getOrgDis,
   'GET /api/v1/health_eye/data/time_dis': getTimeDis,
   'GET /api/v1/health_eye/data/town_dis': getTownDis,
-  'GET /api/v1/health_eye/data/icd_list': getIcdList,
-  'GET /api/v1/health_eye/config/age_group': getAgeGroup,
+  'GET /api/v1/health_eye/icd10_list/_search': getIcdList,
+  'GET /api/v1/health_eye/config/age_groups': getAgeGroup,
   'POST /api/v1/health_eye/config/age_group': postAgeGroup,
+  'GET /api/v1/health_eye/geo': getYH,
 }

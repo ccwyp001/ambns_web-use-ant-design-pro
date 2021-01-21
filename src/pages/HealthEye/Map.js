@@ -11,7 +11,6 @@ import numeral from 'numeral';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import Authorized from '@/utils/Authorized';
 import styles from './Map.less';
-import MapviewT from '@/components/MapViewT.tsx';
 import OccupationDis from './SubComponents/OccupationDis';
 import ZoneSearch from './SubComponents/ZoneSearch';
 import GenderDis from './SubComponents/GenderDis';
@@ -100,16 +99,12 @@ class HealthMap extends Component {
     // this.dispatchAll();
   };
 
-  handleIcdList = (value) => {
+  handleIcdList = (params) => {
     const { dispatch } = this.props;
-    if (value.length < 2){
-      return
-    }
+
     dispatch({
       type: 'map/fetchIcdList',
-      payload: {
-        q: value
-      },
+      payload: params,
     });
   };
 
@@ -122,7 +117,10 @@ class HealthMap extends Component {
     });
     dispatch({
       type: 'map/fetchGeoData',
-      payload,
+      payload: {
+        fullname: "浙江省台州市玉环市",
+        ...payload
+      },
     });
     dispatch({
       type: 'map/fetchAgeData',

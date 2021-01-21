@@ -1,4 +1,3 @@
-import { queryYHGeo } from '@/services/geographic';
 import {
   queryAgeData,
   queryOccData,
@@ -9,6 +8,8 @@ import {
   queryTimeData,
   queryTownData,
   queryIcdData,
+  queryGeoData,
+  queryAgeGroup,
 } from '@/services/healthEyeSvc';
 
 export default {
@@ -38,8 +39,8 @@ export default {
       })
     },
 
-    *fetchGeoData(_, { call, put }) {
-      const response = yield call(queryYHGeo);
+    *fetchGeoData({ payload }, { call, put }) {
+      const response = yield call(queryGeoData, payload);
       yield put({
         type: 'save',
         payload: {

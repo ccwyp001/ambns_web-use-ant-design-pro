@@ -22,7 +22,7 @@ export default [
     authority: ['admin', 'user'],
     routes: [
       // dashboard
-      { path: '/', redirect: '/dashboard/monitor' },
+      { path: '/', redirect: '/health_eye/map' },
       {
         path: '/dashboard',
         name: 'dashboard',

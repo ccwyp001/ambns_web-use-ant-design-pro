@@ -28,6 +28,9 @@ export default function LabelControl(props) {
     }
     return el;
   };
+  custom.onRemove = () => {
+
+  };
   useEffect(() => {
     // console.log(custom);
     // setControl(custom);

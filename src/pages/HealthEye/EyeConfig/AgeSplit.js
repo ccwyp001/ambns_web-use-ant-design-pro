@@ -18,7 +18,7 @@ import {
   Modal,
   Form,
   DatePicker,
-  Select, Tag,
+  Select, Tag, Transfer,
 } from 'antd';
 
 import Result from '@/components/Result';
@@ -30,7 +30,15 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const SelectOption = Select.Option;
 const { Search, TextArea } = Input;
-
+const mockData = [];
+for (let i = 0; i < 100; i+=1) {
+  mockData.push({
+    key: i,
+    str: i.toString(),
+    title: `content${i + 1}`,
+    description: `description of content${i + 1}`,
+  });
+}
 @connect(({ ageGroup, loading }) => ({
   ageGroup,
   loading: loading.models.ageGroup,
@@ -40,8 +48,8 @@ class BasicList extends PureComponent {
   state = { visible: false, done: false };
 
   formLayout = {
-    labelCol: { span: 7 },
-    wrapperCol: { span: 13 },
+    labelCol: { span: 6 },
+    wrapperCol: { span: 15 },
   };
 
   componentDidMount() {
@@ -80,6 +88,17 @@ class BasicList extends PureComponent {
       visible: false,
     });
   };
+
+  handleChange = targetKeys => {
+    const { form } = this.props;
+    const obj = {};
+    obj.group = targetKeys.sort(
+      (prev, next) => {return prev - next}
+    );
+    form.setFieldsValue(obj);
+  };
+
+  filterOption = (inputValue, option) => option.str.indexOf(inputValue) > -1;
 
   handleSubmit = e => {
     e.preventDefault();
@@ -125,7 +144,7 @@ class BasicList extends PureComponent {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      pageSize: 5,
+      defaultPageSize: 10,
       // total: 50,
     };
 
@@ -160,7 +179,7 @@ class BasicList extends PureComponent {
       }
       return (
         <Form onSubmit={this.handleSubmit}>
-          <FormItem label="年龄组名称" {...this.formLayout}>
+          <FormItem label="名称" {...this.formLayout}>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入年龄组名称' }],
               initialValue: current.name,
@@ -168,9 +187,22 @@ class BasicList extends PureComponent {
           </FormItem>
           <FormItem label="年龄组" {...this.formLayout}>
             {getFieldDecorator('group', {
-              rules: [{ required: true, message: '请输入年龄组名称' }],
-              initialValue: current.name,
-            })(<Input placeholder="请输入" />)}
+              rules: [{ required: true, message: '请输入年龄组' }],
+              initialValue: current.group,
+              valuePropName: 'targetKeys',
+            })(<Transfer
+              dataSource={mockData}
+              showSearch
+              listStyle={{
+                // width: 300,
+                height: 300,
+              }}
+              filterOption={this.filterOption}
+              // targetKeys={[1,2,3]}
+              onChange={this.handleChange}
+              // onSearch={this.handleSearch}
+              render={item => item.key}
+            />)}
           </FormItem>
         </Form>
       );
@@ -231,7 +263,7 @@ class BasicList extends PureComponent {
                     // avatar={<Avatar src={item.logo} shape="square" size="large" />}
                     title={item.name}
                     description={item.group.map(tag => (
-                      <Tag>{tag}</Tag>
+                      <Tag key={`${item.name} ${tag}`}>{tag}</Tag>
                     ))}
                   />
                   <ListContent data={item} />

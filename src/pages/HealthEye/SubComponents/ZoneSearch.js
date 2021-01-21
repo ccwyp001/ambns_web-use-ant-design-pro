@@ -3,7 +3,7 @@ import { Button, Col, Form, Icon, Input, Row, DatePicker, Select, Spin, Empty } 
 import { FormattedMessage } from 'umi/locale';
 import moment from 'moment';
 import styles from '../Map.less';
-
+import debounce from 'lodash/debounce';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -26,6 +26,8 @@ class ZoneSearch2 extends PureComponent {
     this.state = {
       expandForm: false,
       formValues: {},
+      scrollPage: 1,
+      icd10Value: '',
     };
     this.formLayout = {
       labelCol: { span: 7 },
@@ -83,6 +85,44 @@ class ZoneSearch2 extends PureComponent {
       })
   };
 
+  getIcdList = (value) => {
+    const { handleIcdList } = this.props;
+    const { scrollPage, icd10Value } = this.state;
+    let page = scrollPage;
+    if (value){
+      page = 1;
+      console.log(value)
+    }
+    value = value || icd10Value;
+    if (value.length < 2){
+      return
+    }
+    this.setState({
+      icd10Value: value, scrollPage: page
+    },
+      () =>{
+        handleIcdList({
+          q: value,
+          per_page: page * 10
+        })
+    });
+  }
+
+  icdListScroll = e => {
+    e.persist();
+    const { target } = e;
+    if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
+      const { scrollPage } = this.state;
+      const nextScrollPage = scrollPage + 1;
+      console.log(nextScrollPage);
+      this.setState({
+        scrollPage: nextScrollPage},
+        () => {
+          this.getIcdList();
+        }
+    );
+    }
+  }
 
   renderSimple() {
     const {
@@ -138,7 +178,6 @@ class ZoneSearch2 extends PureComponent {
       form: { getFieldDecorator },
       icdList,
       fetching,
-      handleIcdList,
     } = this.props;
 
     return (
@@ -218,15 +257,10 @@ class ZoneSearch2 extends PureComponent {
             <FormItem
               label="疾病诊断"
               {...this.formLayout}
-              rules={[
-                {
-                  type: 'array',
-                  max: 6,
-                  message: 'max len is 6',
-                },
-              ]}
             >
-              {getFieldDecorator('icd10')(
+              {getFieldDecorator('icd10', {
+                rules:[{type: 'array', max: 6, message: 'max len is 6',}],
+              })(
                 <Select
                   mode="multiple"
                   // labelInValue
@@ -236,12 +270,13 @@ class ZoneSearch2 extends PureComponent {
                     fetching ? <Spin size="small" />
                       : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
                   filterOption={false}
-                  onSearch={handleIcdList}
+                  onSearch={debounce(this.getIcdList, 500)}
+                  onPopupScroll={this.icdListScroll}
                   // onChange={this.handleChange}
                   style={{ width: '100%' }}
                 >
                   {icdList.map(d => (
-                    <Option key={d.id}>{d.id} {d.text}</Option>
+                    <Option key={d.code}>{d.code} {d.name}</Option>
                   ))}
                 </Select>,
               )}

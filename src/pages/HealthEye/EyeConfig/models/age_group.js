@@ -1,5 +1,8 @@
 import {
-  queryAgeGroup
+  queryAgeGroup,
+  updateAgeGroup,
+  createAgeGroup,
+  deleteAgeGroup
 } from '@/services/healthEyeSvc';
 
 export default {
@@ -7,6 +10,7 @@ export default {
 
   state: {
     ageGroup:[],
+    updateState: 0,
   },
 
   effects: {
@@ -18,6 +22,36 @@ export default {
           ageGroup: response,
         },
       })
+    },
+    * update({ payload, callback }, { call, put }) {
+      const response = yield call(updateAgeGroup, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          updateState: 1,
+        },
+      });
+      if (callback) callback();
+    },
+    * delete({ payload, callback }, { call, put }) {
+      const response = yield call(deleteAgeGroup, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          updateState: 1,
+        },
+      });
+      if (callback) callback();
+    },
+    * create({ payload, callback }, { call, put }) {
+      const response = yield call(createAgeGroup, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          updateState: 1,
+        },
+      });
+      if (callback) callback();
     },
   },
   reducers: {

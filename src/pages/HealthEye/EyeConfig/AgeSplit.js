@@ -18,12 +18,13 @@ import {
   Modal,
   Form,
   DatePicker,
-  Select, Tag, Transfer,
+  Select, Tag, Transfer, message, Switch
 } from 'antd';
 
 import Result from '@/components/Result';
 
 import styles from './AgeSplit.less';
+import Popconfirm from "antd/es/popconfirm";
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
@@ -106,25 +107,53 @@ class BasicList extends PureComponent {
     const { current } = this.state;
     const id = current ? current.id : '';
 
-    setTimeout(() => this.addBtn.blur(), 0);
+    // setTimeout(() => this.addBtn.blur(), 0);
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       this.setState({
         done: true,
       });
-      dispatch({
-        type: 'ageGroup/fetchAgeGroup',
-        payload: { id, ...fieldsValue },
-      });
+      if (id) {
+        dispatch({
+          type: 'ageGroup/update',
+          payload: {
+            query: {
+              id: id
+            },
+            body: {
+              ...fieldsValue
+            }},
+          callback: () => dispatch({
+            type: 'ageGroup/fetchAgeGroup',
+          })
+        });
+      } else {
+        dispatch({
+          type: 'ageGroup/create',
+          payload: {
+            body: {
+              ...fieldsValue
+            }
+          },
+          callback: () => dispatch({
+            type: 'ageGroup/fetchAgeGroup',
+          })
+        })
+      }
+
     });
   };
 
-  deleteItem = id => {
+  deleteItem = item => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'ageGroup/fetchAgeGroup',
-      payload: { id },
+      type: 'ageGroup/delete',
+      payload: item.id,
+      callback: () => dispatch({
+          type: 'ageGroup/fetchAgeGroup',
+        })
     });
+    message.success('删除成功');
   };
 
   render() {
@@ -155,8 +184,8 @@ class BasicList extends PureComponent {
           <p>{moment(updateAt).format('YYYY-MM-DD HH:mm')}</p>
         </div>
         <div className={styles.listContentItem}>
-          <span>Disabled</span>
-          <p>{disabled}</p>
+          <span>状态</span>
+          <p>{disabled ? '停用' : '可用'}</p>
         </div>
       </div>
     );
@@ -167,7 +196,7 @@ class BasicList extends PureComponent {
           <Result
             type="success"
             title="操作成功"
-            description="一系列的信息描述，很短同样也可以带标点。"
+            description=""
             actions={
               <Button type="primary" onClick={this.handleDone}>
                 知道了
@@ -203,6 +232,12 @@ class BasicList extends PureComponent {
               // onSearch={this.handleSearch}
               render={item => item.key}
             />)}
+          </FormItem>
+          <FormItem label="停用" {...this.formLayout}>
+            {getFieldDecorator('disabled', {
+              initialValue: current.disabled,
+              valuePropName: 'checked'
+            })(<Switch />)}
           </FormItem>
         </Form>
       );

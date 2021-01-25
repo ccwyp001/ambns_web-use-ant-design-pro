@@ -21,6 +21,32 @@ export async function queryAgeGroup(params) {
   return request(`/api/v1/health_eye/config/age_groups?${stringify(params)}`);
 }
 
+export async function updateAgeGroup(params={}) {
+  const { id, ...otherParams} = params.query
+  return request(`/api/v1/health_eye/config/age_group/${id}?${stringify(otherParams)}`, {
+    method: 'PUT',
+    body: {
+      ...params.body,
+    },
+  });
+}
+
+export async function deleteAgeGroup(params) {
+  return request(`/api/v1/health_eye/config/age_group/${params}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function createAgeGroup(params={}) {
+  return request(`/api/v1/health_eye/config/age_groups?${stringify(params.query)}`, {
+    method: 'POST',
+    body: {
+      ...params.body,
+    },
+  });
+}
+
+
 export async function queryTopData() {
   return request('/api/v1/health_eye/data/top');
 }

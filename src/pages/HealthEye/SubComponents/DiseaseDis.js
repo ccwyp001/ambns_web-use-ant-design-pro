@@ -6,7 +6,7 @@ import { parse } from 'path-to-regexp';
 class DiseaseDis extends React.Component {
   static defaultProps = {
     topData: [],
-    height: 188
+    height: 188,
   };
 
   timer = 0;
@@ -19,7 +19,7 @@ class DiseaseDis extends React.Component {
       height: props.height,
       data: props.topData,
       displayFlag: props.topData.length - 1,
-    }
+    };
   }
 
   componentDidMount() {
@@ -41,9 +41,11 @@ class DiseaseDis extends React.Component {
     let { displayFlag } = this.state;
     this.timer = setTimeout(() => {
       if (playOrNot) {
-        if (displayFlag > 0){
+        if (displayFlag > 0) {
           displayFlag -= 1;
-        } else { displayFlag = data.length - 1;}
+        } else {
+          displayFlag = data.length - 1;
+        }
         this.setState(
           {
             displayFlag,
@@ -51,7 +53,7 @@ class DiseaseDis extends React.Component {
           () => {
             this.tick();
           }
-        )
+        );
       } else {
         // this.tick();
       }
@@ -64,9 +66,9 @@ class DiseaseDis extends React.Component {
     const ds = new DataSet();
     const dv = ds.createView().source(data);
     dv.source(data).transform({
-      type: "sort-by",
+      type: 'sort-by',
       fields: ['y'],
-      order: 'ASC'
+      order: 'ASC',
     });
     // console.log(dv);
     return (
@@ -81,39 +83,45 @@ class DiseaseDis extends React.Component {
           <Axis
             name="x"
             label={{
-              offset: 12
+              offset: 12,
             }}
           />
           <Axis name="y" visible={false} />
           <Tooltip showTitle={false} />
-          { playOrNot ?
+          {playOrNot ? (
             <Guide>
               <Guide.Region
                 top={false} // 指定 giude 是否绘制在 canvas 最上层，默认为 false, 即绘制在最下层
-                start={(e)=>([parseInt(displayFlag, 10)-0.4, 'start'])} // 辅助框起始位置，值为原始数据值，支持 callback
-                end={(e)=>([parseInt(displayFlag, 10)+0.4, 'end'])}// 辅助框结束位置，值为原始数据值，支持 callback
+                start={e => [parseInt(displayFlag, 10) - 0.4, 'start']} // 辅助框起始位置，值为原始数据值，支持 callback
+                end={e => [parseInt(displayFlag, 10) + 0.4, 'end']} // 辅助框结束位置，值为原始数据值，支持 callback
                 style={{
-              lineWidth: 0, // 辅助框的边框宽度
-              fill: '#ff1151', // 辅助框填充的颜色
-              fillOpacity: 0.3, // 辅助框的背景透明度
-              stroke: '#ccc' // 辅助框的边框颜色设置
-            }}
+                  lineWidth: 0, // 辅助框的边框宽度
+                  fill: '#97c3ef', // 辅助框填充的颜色
+                  fillOpacity: 0.3, // 辅助框的背景透明度
+                  stroke: '#ccc', // 辅助框的边框颜色设置
+                }}
               />
-            </Guide>: null}
+            </Guide>
+          ) : null}
           <Geom
             type="interval"
             position="x*y"
-            color={['x', (item) =>{
-              return colorMap[item]
-            }]}
-            select={[true, {
-              style: {
-                fill: '#E8684A',
-              }
-            }
+            color={[
+              'x',
+              item => {
+                return colorMap[item];
+              },
+            ]}
+            select={[
+              true,
+              {
+                style: {
+                  fill: '#E8684A',
+                },
+              },
             ]}
           >
-            <Label content='y' offset={5} />
+            <Label content="y" offset={5} />
           </Geom>
         </Chart>
       </div>

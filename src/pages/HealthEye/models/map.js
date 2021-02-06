@@ -9,6 +9,7 @@ import {
   queryTownData,
   queryIcdData,
   queryGeoData,
+  queryDataSource,
   queryAgeGroup,
 } from '@/services/healthEyeSvc';
 
@@ -18,14 +19,16 @@ export default {
   state: {
     geo: [],
     occData: [],
-    ageData:[],
+    ageData: [],
     genderData: [],
     insData: [],
-    topData:[],
-    orgData:[],
-    timeData:[],
-    townData:[],
-    icdList:[],
+    topData: [],
+    orgData: [],
+    timeData: [],
+    townData: [],
+    icdList: [],
+    sourceList: [],
+    ageGroups: [],
   },
 
   effects: {
@@ -36,9 +39,26 @@ export default {
         payload: {
           icdList: response,
         },
-      })
+      });
     },
-
+    *fetchSourceList({ payload }, { call, put }) {
+      const response = yield call(queryDataSource, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          sourceList: response,
+        },
+      });
+    },
+    *fetchAgeGroup({ payload }, { call, put }) {
+      const response = yield call(queryAgeGroup, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          ageGroups: response,
+        },
+      });
+    },
     *fetchGeoData({ payload }, { call, put }) {
       const response = yield call(queryGeoData, payload);
       yield put({
@@ -46,7 +66,7 @@ export default {
         payload: {
           geo: response,
         },
-      })
+      });
     },
     *fetchOrgData(_, { call, put }) {
       const response = yield call(queryOrgData);
@@ -55,7 +75,7 @@ export default {
         payload: {
           orgData: response,
         },
-      })
+      });
     },
     *fetchTownData(_, { call, put }) {
       const response = yield call(queryTownData);
@@ -64,7 +84,7 @@ export default {
         payload: {
           townData: response,
         },
-      })
+      });
     },
     *fetchTimeData(_, { call, put }) {
       const response = yield call(queryTimeData);
@@ -73,7 +93,7 @@ export default {
         payload: {
           timeData: response,
         },
-      })
+      });
     },
     *fetchTopData(_, { call, put }) {
       const response = yield call(queryTopData);
@@ -82,7 +102,7 @@ export default {
         payload: {
           topData: response,
         },
-      })
+      });
     },
     *fetchInsData({ payload }, { call, put }) {
       const response = yield call(queryInsData, payload);
@@ -91,7 +111,7 @@ export default {
         payload: {
           insData: response,
         },
-      })
+      });
     },
 
     *fetchAgeData(_, { call, put }) {
@@ -135,14 +155,16 @@ export default {
       return {
         geo: false,
         occData: [],
-        ageData:[],
-        genderData:[],
+        ageData: [],
+        genderData: [],
         insData: [],
         topData: [],
-        orgData:[],
-        timeData:[],
-        townData:[],
-        icdList:[],
+        orgData: [],
+        timeData: [],
+        townData: [],
+        icdList: [],
+        sourceList: [],
+        ageGroups: [],
       };
     },
   },

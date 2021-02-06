@@ -1,13 +1,8 @@
-import React, { Component, Suspense } from 'react';
+import React, { Component, PureComponent, Suspense } from 'react';
 import { AsyncLoadBizCharts } from '@/components/Charts/AsyncLoadBizCharts';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Row, Col, Card, Tooltip, Radio, Dropdown, Icon } from 'antd';
-import { Pie, WaterWave, Gauge, TagCloud } from '@/components/Charts';
-import NumberInfo from '@/components/NumberInfo';
-import CountDown from '@/components/CountDown';
-import ActiveChart from '@/components/ActiveChart';
-import numeral from 'numeral';
+import { Row, Col, Card, Tooltip, Radio, Dropdown, Icon, Button, Modal, Steps } from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import Authorized from '@/utils/Authorized';
 import styles from './Map.less';
@@ -19,8 +14,9 @@ import AgeDis from '@/pages/HealthEye/SubComponents/AgeDis';
 import TimeDis from '@/pages/HealthEye/SubComponents/TimeDis';
 import DiseaseDis from '@/pages/HealthEye/SubComponents/DiseaseDis';
 import OrgDis from '@/pages/HealthEye/SubComponents/OrgDis';
+import Result from '@/components/Result';
 // import CenterMap from '@/pages/HealthEye/SubComponents/CenterMap';
-
+const { Step } = Steps;
 const { Secured } = Authorized;
 const CenterMap = React.lazy(() => import('./SubComponents/CenterMap'));
 // const OccupationDis = React.lazy(() => import('./SubComponents/OccupationDis'));
@@ -33,6 +29,72 @@ const havePermissionAsync = new Promise(resolve => {
   // Call resolve on behalf of passed
   setTimeout(() => resolve(), 300);
 });
+
+class SelectModal extends PureComponent {
+  static defaultProps = {
+    handleModalVisible: () => {},
+    modalVisible: false,
+    currentStep: {
+      current: 2,
+      detail: {
+        done: 1,
+        total: 8,
+      },
+    },
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  getModalContent = () => {
+    const { handleModalVisible, currentStep } = this.props;
+    return (
+      <div>
+        <div className={styles.stepsContent}>
+          <Steps current={2} status="process">
+            <Step title="加载数据源" icon={<Icon type="cloud-upload" />} />
+            <Step title="初始化" icon={<Icon type="solution" />} />
+            <Step
+              title="分析中"
+              icon={2 === 0 ? <Icon type="loading" /> : <Icon type="monitor" />}
+            />
+            <Step
+              title={3 === 0 ? '完成' : '错误'}
+              icon={3 === 0 ? <Icon type="smile-o" /> : <Icon type="frown" />}
+            />
+          </Steps>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <Button type="primary" onClick={() => handleModalVisible(false)}>
+            知道了
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    const { modalVisible } = this.props;
+    return (
+      <Modal
+        title={'查询中'}
+        width={800}
+        footer={null}
+        // bodyStyle={done ? { padding: '72px 0' } : { padding: '28px 0 0' }}
+        destroyOnClose
+        closable={false}
+        maskClosable={false}
+        // onOk={() => this.handleModalVisible(false)}
+        // onCancel={() => this.handleModalVisible(false)}
+        visible={modalVisible}
+      >
+        {this.getModalContent()}
+      </Modal>
+    );
+  }
+}
 
 @Secured(havePermissionAsync)
 @connect(({ map, loading }) => ({
@@ -49,9 +111,9 @@ const havePermissionAsync = new Promise(resolve => {
   fetchingIcdList: loading.effects['map/fetchIcdList'],
 }))
 class HealthMap extends Component {
-
   state = {
     playOrNot: false,
+    modalVisible: false,
   };
 
   colors = [
@@ -68,9 +130,8 @@ class HealthMap extends Component {
   ];
 
   componentDidMount() {
-
     this.reqRef = requestAnimationFrame(() => {
-      this.dispatchAll()
+      this.dispatchAll();
     });
   }
 
@@ -83,14 +144,14 @@ class HealthMap extends Component {
     // clearTimeout(this.timeoutId);
   }
 
-  playRound=()=> {
-    const {playOrNot} = this.state;
+  playRound = () => {
+    const { playOrNot } = this.state;
     this.setState({
       playOrNot: !playOrNot,
-      });
+    });
   };
 
-  handleSearch = (params) => {
+  handleSearch = params => {
     const { dispatch } = this.props;
     dispatch({
       type: 'map/fetchInsData',
@@ -99,17 +160,29 @@ class HealthMap extends Component {
     // this.dispatchAll();
   };
 
-  handleIcdList = (params) => {
+  handleIcdList = params => {
     const { dispatch } = this.props;
-
     dispatch({
       type: 'map/fetchIcdList',
       payload: params,
     });
   };
 
+  handleSourceList = params => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'map/fetchSourceList',
+      payload: params,
+    });
+  };
 
-  dispatchAll=(payload={})=> {
+  handleModalVisible = flag => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  };
+
+  dispatchAll = (payload = {}) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'map/fetchOccData',
@@ -118,8 +191,8 @@ class HealthMap extends Component {
     dispatch({
       type: 'map/fetchGeoData',
       payload: {
-        fullname: "浙江省台州市玉环市",
-        ...payload
+        fullname: '浙江省台州市玉环市',
+        ...payload,
       },
     });
     dispatch({
@@ -150,25 +223,50 @@ class HealthMap extends Component {
       type: 'map/fetchTownData',
       payload,
     });
+    dispatch({
+      type: 'map/fetchSourceList',
+      payload,
+    });
+    dispatch({
+      type: 'map/fetchAgeGroup',
+      payload,
+    });
   };
 
   render() {
-    const { map, loading, fetchingTopData,
-      fetchingOrgData,fetchingGeoData,
-      fetchingTimeData, fetchingInsData,
-      fetchingAgeData,fetchingGenData,fetchingOccData,
+    const {
+      map,
+      loading,
+      fetchingTopData,
+      fetchingOrgData,
+      fetchingGeoData,
+      fetchingTimeData,
+      fetchingInsData,
+      fetchingAgeData,
+      fetchingGenData,
+      fetchingOccData,
       fetchingIcdList,
     } = this.props;
-    const { occData, ageData, geo, genderData, insData,
-      topData, orgData, timeData, townData, icdList } = map;
-    const { playOrNot } = this.state;
+    const {
+      occData,
+      ageData,
+      geo,
+      genderData,
+      insData,
+      topData,
+      orgData,
+      timeData,
+      townData,
+      icdList,
+      sourceList,
+      ageGroups,
+    } = map;
+    const { playOrNot, modalVisible } = this.state;
     const colorMap = {};
-    topData.map((item, index) =>{
+    topData.map((item, index) => {
       colorMap[item.x] = this.colors[index];
       return item;
-      }
-    );
-
+    });
     return (
       <GridContent>
         <Row gutter={16}>
@@ -176,7 +274,7 @@ class HealthMap extends Component {
             <Card
               // loading={loading}
               style={{ marginBottom: 16 }}
-              bodyStyle={{ padding: 16}}
+              bodyStyle={{ padding: 16 }}
               bordered={false}
             >
               <div className={styles.tableListForm}>
@@ -184,19 +282,25 @@ class HealthMap extends Component {
                   handleSearch={this.handleSearch}
                   handleFormReset={this.handleSearch}
                   handleIcdList={this.handleIcdList}
+                  handleModalVisible={this.handleModalVisible}
                   fetching={fetchingIcdList}
                   icdList={icdList}
+                  sourceList={sourceList ? sourceList.list : []}
+                  ageGroups={ageGroups}
                 />
               </div>
             </Card>
           </Col>
         </Row>
+        <SelectModal modalVisible={modalVisible} handleModalVisible={this.handleModalVisible} />
         <Row gutter={16}>
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>
             <Suspense fallback={null}>
               <Card
                 loading={fetchingTopData}
-                title={<FormattedMessage id="app.health_map.DiseaseDis" defaultMessage="疾病分布" />}
+                title={
+                  <FormattedMessage id="app.health_map.DiseaseDis" defaultMessage="疾病分布" />
+                }
                 style={{ marginBottom: 16 }}
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
@@ -224,11 +328,7 @@ class HealthMap extends Component {
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <OrgDis
-                  orgData={orgData}
-                  height={336}
-                  colorMap={colorMap}
-                />
+                <OrgDis orgData={orgData} height={336} colorMap={colorMap} />
               </Card>
             </Suspense>
           </Col>
@@ -243,15 +343,11 @@ class HealthMap extends Component {
                         id="app.health_map.map"
                         defaultMessage="Disease Distribution Map"
                       />
-              }
+                    }
                     bordered={false}
                   >
                     <div className={styles.mapChart}>
-                      <CenterMap
-                        data={geo}
-                        townData={townData}
-                        colorMap={colorMap}
-                      />
+                      <CenterMap data={geo} townData={townData} colorMap={colorMap} />
                     </div>
                   </Card>
                 </Suspense>
@@ -265,7 +361,7 @@ class HealthMap extends Component {
                         id="app.health_map.OccupationDis"
                         defaultMessage="Occupational Distribution"
                       />
-              }
+                    }
                     style={{ marginBottom: 16 }}
                     bordered={false}
                   >
@@ -275,7 +371,12 @@ class HealthMap extends Component {
                 <Suspense fallback={null}>
                   <Card
                     loading={fetchingInsData}
-                    title={<FormattedMessage id="app.health_map.InsuranceDis" defaultMessage="Insurance Distribution" />}
+                    title={
+                      <FormattedMessage
+                        id="app.health_map.InsuranceDis"
+                        defaultMessage="Insurance Distribution"
+                      />
+                    }
                     style={{ marginBottom: 16 }}
                     bodyStyle={{ textAlign: 'center' }}
                     bordered={false}
@@ -288,11 +389,7 @@ class HealthMap extends Component {
             <Row gutter={16}>
               <Col xl={16} lg={24} sm={24} xs={24} style={{ marginBottom: 16 }}>
                 <Suspense fallback={null}>
-                  <AgeDis
-                    ageData={ageData}
-                    loading={fetchingAgeData}
-                    height={151}
-                  />
+                  <AgeDis ageData={ageData} loading={fetchingAgeData} height={151} />
                 </Suspense>
               </Col>
               <Col xl={8} lg={24} sm={24} xs={24} style={{ marginBottom: 16 }}>
@@ -300,11 +397,8 @@ class HealthMap extends Component {
                   <Card
                     loading={fetchingGenData}
                     title={
-                      <FormattedMessage
-                        id="app.health_map.GenderDis"
-                        defaultMessage="GenderDis"
-                      />
-              }
+                      <FormattedMessage id="app.health_map.GenderDis" defaultMessage="GenderDis" />
+                    }
                     bordered={false}
                     className={styles.pieCard}
                   >
@@ -342,4 +436,3 @@ export default props => (
     <HealthMap {...props} />
   </AsyncLoadBizCharts>
 );
-

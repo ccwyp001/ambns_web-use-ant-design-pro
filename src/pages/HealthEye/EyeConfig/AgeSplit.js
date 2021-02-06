@@ -18,13 +18,17 @@ import {
   Modal,
   Form,
   DatePicker,
-  Select, Tag, Transfer, message, Switch
+  Select,
+  Tag,
+  Transfer,
+  message,
+  Switch,
 } from 'antd';
 
 import Result from '@/components/Result';
 
 import styles from './AgeSplit.less';
-import Popconfirm from "antd/es/popconfirm";
+import Popconfirm from 'antd/es/popconfirm';
 
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
@@ -32,7 +36,7 @@ const RadioGroup = Radio.Group;
 const SelectOption = Select.Option;
 const { Search, TextArea } = Input;
 const mockData = [];
-for (let i = 0; i < 100; i+=1) {
+for (let i = 0; i < 100; i += 1) {
   mockData.push({
     key: i,
     str: i.toString(),
@@ -93,9 +97,9 @@ class BasicList extends PureComponent {
   handleChange = targetKeys => {
     const { form } = this.props;
     const obj = {};
-    obj.group = targetKeys.sort(
-      (prev, next) => {return prev - next}
-    );
+    obj.group = targetKeys.sort((prev, next) => {
+      return prev - next;
+    });
     form.setFieldsValue(obj);
   };
 
@@ -118,29 +122,31 @@ class BasicList extends PureComponent {
           type: 'ageGroup/update',
           payload: {
             query: {
-              id: id
+              id: id,
             },
             body: {
-              ...fieldsValue
-            }},
-          callback: () => dispatch({
-            type: 'ageGroup/fetchAgeGroup',
-          })
+              ...fieldsValue,
+            },
+          },
+          callback: () =>
+            dispatch({
+              type: 'ageGroup/fetchAgeGroup',
+            }),
         });
       } else {
         dispatch({
           type: 'ageGroup/create',
           payload: {
             body: {
-              ...fieldsValue
-            }
+              ...fieldsValue,
+            },
           },
-          callback: () => dispatch({
-            type: 'ageGroup/fetchAgeGroup',
-          })
-        })
+          callback: () =>
+            dispatch({
+              type: 'ageGroup/fetchAgeGroup',
+            }),
+        });
       }
-
     });
   };
 
@@ -149,9 +155,10 @@ class BasicList extends PureComponent {
     dispatch({
       type: 'ageGroup/delete',
       payload: item.id,
-      callback: () => dispatch({
+      callback: () =>
+        dispatch({
           type: 'ageGroup/fetchAgeGroup',
-        })
+        }),
     });
     message.success('删除成功');
   };
@@ -177,11 +184,11 @@ class BasicList extends PureComponent {
       // total: 50,
     };
 
-    const ListContent = ({ data: { disabled, updateAt } }) => (
+    const ListContent = ({ data: { disabled, update_at } }) => (
       <div className={styles.listContent}>
         <div className={styles.listContentItem}>
           <span>更新时间</span>
-          <p>{moment(updateAt).format('YYYY-MM-DD HH:mm')}</p>
+          <p>{moment(parseInt(update_at, 10) * 1000).format('YYYY-MM-DD HH:mm')}</p>
         </div>
         <div className={styles.listContentItem}>
           <span>状态</span>
@@ -219,24 +226,26 @@ class BasicList extends PureComponent {
               rules: [{ required: true, message: '请输入年龄组' }],
               initialValue: current.group,
               valuePropName: 'targetKeys',
-            })(<Transfer
-              dataSource={mockData}
-              showSearch
-              listStyle={{
-                // width: 300,
-                height: 300,
-              }}
-              filterOption={this.filterOption}
-              // targetKeys={[1,2,3]}
-              onChange={this.handleChange}
-              // onSearch={this.handleSearch}
-              render={item => item.key}
-            />)}
+            })(
+              <Transfer
+                dataSource={mockData}
+                showSearch
+                listStyle={{
+                  // width: 300,
+                  height: 300,
+                }}
+                filterOption={this.filterOption}
+                // targetKeys={[1,2,3]}
+                onChange={this.handleChange}
+                // onSearch={this.handleSearch}
+                render={item => item.key}
+              />
+            )}
           </FormItem>
           <FormItem label="停用" {...this.formLayout}>
             {getFieldDecorator('disabled', {
               initialValue: current.disabled,
-              valuePropName: 'checked'
+              valuePropName: 'checked',
             })(<Switch />)}
           </FormItem>
         </Form>

@@ -34,12 +34,11 @@ class SelectModal extends PureComponent {
   static defaultProps = {
     handleModalVisible: () => {},
     modalVisible: false,
+    loading: false,
     currentStep: {
-      current: 2,
-      detail: {
-        done: 1,
-        total: 8,
-      },
+      current: 0,
+      done: 0,
+      total: 8,
     },
   };
 
@@ -49,28 +48,30 @@ class SelectModal extends PureComponent {
   }
 
   getModalContent = () => {
-    const { handleModalVisible, currentStep } = this.props;
+    const { handleModalVisible, currentStep:{current, done, total}, loading } = this.props;
     return (
       <div>
         <div className={styles.stepsContent}>
-          <Steps current={2} status="process">
-            <Step title="加载数据源" icon={<Icon type="cloud-upload" />} />
-            <Step title="初始化" icon={<Icon type="solution" />} />
+          <Steps current={current <= 3 ? current : 3} status={99 === current ? "error" : "process"}>
+            <Step title="加载数据源" icon={0 === current ? <Icon type="loading" /> : <Icon type="cloud-upload" />} />
+            <Step title="初始化" icon={1 === current ? <Icon type="loading" /> : <Icon type="solution" />} />
             <Step
               title="分析中"
-              icon={2 === 0 ? <Icon type="loading" /> : <Icon type="monitor" />}
+              icon={2 === current ? <Icon type="loading" /> : <Icon type="monitor" />}
+              description={2 === current ? `${done}/${total}已完成` : null}
             />
             <Step
-              title={3 === 0 ? '完成' : '错误'}
-              icon={3 === 0 ? <Icon type="smile-o" /> : <Icon type="frown" />}
+              title={current > 3 ? '错误' : '完成' }
+              icon={current > 3 ? <Icon type="frown" /> : <Icon type="smile-o" /> }
             />
           </Steps>
         </div>
+        {current >= 3 ?
         <div style={{ textAlign: 'center' }}>
-          <Button type="primary" onClick={() => handleModalVisible(false)}>
-            知道了
+          <Button type="primary" loading={loading} onClick={() => handleModalVisible(false)}>
+            {loading ? '重新加载数据中' : '知道了'}
           </Button>
-        </div>
+        </div> : null }
       </div>
     );
   };
@@ -115,7 +116,8 @@ class HealthMap extends Component {
     playOrNot: false,
     modalVisible: false,
   };
-
+  timerAnalysis = 0;
+  intervalAnalysis = 500;
   colors = [
     '#5B8FF9',
     '#5AD8A6',
@@ -141,6 +143,7 @@ class HealthMap extends Component {
       type: 'map/clear',
     });
     cancelAnimationFrame(this.reqRef);
+    clearTimeout(this.timerAnalysis);
     // clearTimeout(this.timeoutId);
   }
 
@@ -151,13 +154,39 @@ class HealthMap extends Component {
     });
   };
 
+  tickAnalysis = () =>{
+    this.timerAnalysis = setTimeout(() => {
+      const {map: {analysisState, analysisSign}} = this.props;
+      if (analysisState && analysisState.current >= 3){
+        clearTimeout(this.timerAnalysis)
+        this.dispatchAll({sign: analysisSign})
+      }
+      else {
+        this.handleAnalysisSelect(this.tickAnalysis)
+      }
+    }, this.intervalAnalysis);
+  }
+
   handleSearch = params => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'map/fetchInsData',
-      payload: params,
+      type: 'map/createAnalysis',
+      payload: {
+        body: params
+      },
+      callback: this.tickAnalysis
     });
+
     // this.dispatchAll();
+  };
+
+  handleAnalysisSelect = (callback) => {
+    const { dispatch, map: {analysisSign} } = this.props;
+    dispatch({
+      type: 'map/fetchAnalysis',
+      payload: {sign: analysisSign},
+      callback: callback,
+    });
   };
 
   handleIcdList = params => {
@@ -260,6 +289,7 @@ class HealthMap extends Component {
       icdList,
       sourceList,
       ageGroups,
+      analysisState,
     } = map;
     const { playOrNot, modalVisible } = this.state;
     const colorMap = {};
@@ -292,7 +322,12 @@ class HealthMap extends Component {
             </Card>
           </Col>
         </Row>
-        <SelectModal modalVisible={modalVisible} handleModalVisible={this.handleModalVisible} />
+        <SelectModal
+          modalVisible={modalVisible}
+          handleModalVisible={this.handleModalVisible}
+          currentStep={analysisState}
+          loading={loading}
+        />
         <Row gutter={16}>
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>
             <Suspense fallback={null}>

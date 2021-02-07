@@ -11,6 +11,8 @@ import {
   queryGeoData,
   queryDataSource,
   queryAgeGroup,
+  queryAnalysisRecord,
+  createAnalysisRecord,
 } from '@/services/healthEyeSvc';
 
 export default {
@@ -29,9 +31,37 @@ export default {
     icdList: [],
     sourceList: [],
     ageGroups: [],
+    analysisSign: '',
+    analysisState: {},
   },
 
   effects: {
+    *createAnalysis({ payload, callback }, { call, put }) {
+      const response = yield call(createAnalysisRecord, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          analysisSign: response,
+          analysisState: {
+            current: 0,
+            done: 0,
+            total: 8,},
+        },
+      });
+      if (callback) callback();
+    },
+
+    * fetchAnalysis({ payload, callback }, { call, put }) {
+      const response = yield call(queryAnalysisRecord, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          analysisState: response,
+        },
+      });
+      if (callback) callback();
+    },
+
     *fetchIcdList({ payload }, { call, put }) {
       const response = yield call(queryIcdData, payload);
       yield put({
@@ -165,6 +195,8 @@ export default {
         icdList: [],
         sourceList: [],
         ageGroups: [],
+        analysisSign: '',
+        analysisState: {},
       };
     },
   },

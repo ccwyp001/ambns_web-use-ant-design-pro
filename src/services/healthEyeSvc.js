@@ -1,6 +1,19 @@
 import request from '@/utils/request';
 import { stringify } from 'qs';
 
+export async function createAnalysisRecord(params = {}) {
+  return request(`/api/v1/health_eye/data?${stringify(params.query)}`, {
+    method: 'POST',
+    body: {
+      ...params.body,
+    },
+  });
+}
+
+export async function queryAnalysisRecord(params = {}) {
+  return request(`/api/v1/health_eye/data?${stringify(params)}`);
+}
+
 export async function queryAgeData() {
   return request('/api/v1/health_eye/data/age_dis');
 }

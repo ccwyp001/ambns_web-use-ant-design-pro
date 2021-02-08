@@ -1,5 +1,5 @@
 import React, { Fragment, PureComponent } from 'react';
-import { Button, Col, Form, Icon, Input, Row, DatePicker, Select, Spin, Empty, Modal } from 'antd';
+import { Button, Col, Form, Icon, Input, Row, DatePicker, Select, Spin, Empty, Modal, Radio } from 'antd';
 import { FormattedMessage } from 'umi/locale';
 import moment from 'moment';
 import styles from '../Map.less';
@@ -29,6 +29,7 @@ class ZoneSearch2 extends PureComponent {
       formValues: {},
       scrollPage: 1,
       icd10Value: '',
+      icd10Level: 4,
     };
     this.formLayout = {
       labelCol: { span: 7 },
@@ -98,7 +99,7 @@ class ZoneSearch2 extends PureComponent {
 
   getIcdList = value => {
     const { handleIcdList } = this.props;
-    const { scrollPage, icd10Value } = this.state;
+    const { scrollPage, icd10Value, icd10Level } = this.state;
     let page = scrollPage;
     if (value) {
       page = 1;
@@ -116,6 +117,7 @@ class ZoneSearch2 extends PureComponent {
       () => {
         handleIcdList({
           q: value,
+          level: icd10Level,
           per_page: page * 10,
         });
       }
@@ -139,6 +141,15 @@ class ZoneSearch2 extends PureComponent {
       );
     }
   };
+
+  handleFormLayoutChange = e => {
+    const { form } = this.props;
+    form.setFieldsValue({icd10: []})
+    this.setState(
+      {icd10Level: e.target.value},
+      () => {this.getIcdList()}
+    )
+  }
 
   renderSimple() {
     const {
@@ -292,6 +303,31 @@ class ZoneSearch2 extends PureComponent {
           </Col>
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          {/*<Col md={6} sm={24}>*/}
+          {/*  <FormItem label="性别" {...this.formLayout}>*/}
+          {/*    {getFieldDecorator('gender')(*/}
+          {/*      <Select allowClear placeholder="请选择">*/}
+          {/*        <Option value="0">男</Option>*/}
+          {/*        <Option value="1">女</Option>*/}
+          {/*      </Select>*/}
+          {/*    )}*/}
+          {/*  </FormItem>*/}
+          {/*</Col>*/}
+          <Col md={6} sm={24}>
+            <FormItem label="icd层级" {...this.formLayout}>
+              {getFieldDecorator('level', {
+                initialValue: 4,
+              })(
+                <Radio.Group
+                  onChange={this.handleFormLayoutChange}
+                >
+                  <Radio.Button value={2}>类目</Radio.Button>
+                  <Radio.Button value={3}>亚目</Radio.Button>
+                  <Radio.Button value={4}>编码</Radio.Button>
+                </Radio.Group>
+              )}
+            </FormItem>
+          </Col>
           <Col md={18} sm={24}>
             <FormItem label="疾病诊断" {...this.formLayout}>
               {getFieldDecorator('icd10', {
@@ -320,16 +356,6 @@ class ZoneSearch2 extends PureComponent {
                       {d.code} {d.name}
                     </Option>
                   ))}
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="性别" {...this.formLayout}>
-              {getFieldDecorator('gender')(
-                <Select allowClear placeholder="请选择">
-                  <Option value="0">男</Option>
-                  <Option value="1">女</Option>
                 </Select>
               )}
             </FormItem>

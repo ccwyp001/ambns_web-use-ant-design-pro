@@ -15,39 +15,21 @@ const AgeDis = memo(
           size="large"
           tabBarStyle={{ marginBottom: 24 }}
         >
-          <TabPane
-            tab='年龄分布'
-            key="sales"
-          >
-            <div className={styles.salesBar}>
-              <Bar
-                height={height}
-                data={ageData}
-              />
-            </div>
-          </TabPane>
-          <TabPane
-            tab='自定义组1'
-            key="views1"
-          >
-            <div className={styles.salesBar}>
-              <Bar
-                height={height}
-                data={ageData}
-              />
-            </div>
-          </TabPane>
-          <TabPane
-            tab='自定义组2'
-            key="views2"
-          >
-            <div className={styles.salesBar}>
-              <Bar
-                height={height}
-                data={ageData}
-              />
-            </div>
-          </TabPane>
+          {
+            ageData.map((item, index) => (
+              <TabPane
+                tab={item.groupName}
+                key={`views${index}`}
+              >
+                <div className={styles.salesBar}>
+                  <Bar
+                    height={height}
+                    data={item.groupData}
+                  />
+                </div>
+              </TabPane>
+            ))
+          }
         </Tabs>
       </div>
     </Card>

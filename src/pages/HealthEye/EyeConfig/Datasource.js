@@ -22,7 +22,7 @@ import {
   Divider,
   Steps,
   Radio,
-  Upload,
+  Upload, Progress,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import styles from './Datasource.less';
@@ -59,7 +59,7 @@ const CreateForm = Form.create()(props => {
     >
       <Dragger
         accept=".csv,.xlsx"
-        action="/api/v1/health_eye/config/source"
+        action="/api/v1/health_eye/config/sources"
         multiple={false}
         onChange={info => {
           const { status } = info.file;
@@ -68,7 +68,7 @@ const CreateForm = Form.create()(props => {
           }
           if (status === 'done') {
             // message.success(`${info.file.name} file uploaded successfully.`);
-            setTimeout(() => handleAdd(), 0.1);
+            setTimeout(() => handleAdd(), 100);
           } else if (status === 'error') {
             message.error(`${info.file.name} 上传失败（${info.file.response.message}）`);
           }
@@ -82,6 +82,9 @@ const CreateForm = Form.create()(props => {
         <p className="ant-upload-text">点击/拖拽上传文件</p>
         <p className="ant-upload-hint">支持csv文件、xlsx文件</p>
       </Dragger>
+      <div style={{ textAlign: 'center' }} >
+        <a href={"/api/v1/health_eye/template"}>下载模板</a>
+      </div>
     </Modal>
   );
 });
@@ -102,13 +105,13 @@ class UpdateForm extends PureComponent {
         name: props.values.name,
         desc: props.values.desc,
         key: props.values.key,
-        target: '0',
         template: '0',
         type: '1',
         time: '',
         frequency: 'month',
       },
       currentStep: 0,
+      selectedItems: [],
     };
 
     this.formLayout = {
@@ -138,6 +141,22 @@ class UpdateForm extends PureComponent {
     });
   };
 
+  handleOptionChange = (value, option) => {
+    const { form } = this.props;
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      console.log(fieldsValue);
+      // this.setState(
+      //   {
+      //     formVals,
+      //   },
+      //   () => {
+      //   }
+      // );
+    });
+    // this.setState({ selectedItems });
+  };
+
   backward = () => {
     const { currentStep } = this.state;
     this.setState({
@@ -154,39 +173,52 @@ class UpdateForm extends PureComponent {
 
   renderContent = (currentStep, formVals) => {
     const { form } = this.props;
+    const { selectedItems } = this.state;
+    const cols_map = {
+      'NL': '年龄',
+      'ORG_CODE': '诊断单位',
+      'INS': '险种',
+      'TOWN': '乡镇',
+      'XB': '性别',
+      'OCCUPATION': '职业',
+      'COMMUNITY': '村居',
+      'CLINIC_TIME': '诊断时间',
+      'SICKEN_TIME': '发病时间',
+      'IDCARD': '身份证号',
+      'ICD10': 'ICD10',
+    };
+    const colsOptions = ['年龄', '诊断单位', '险种', '乡镇', '性别', '职业', '村居', '诊断时间', '发病时间', '身份证号', 'ICD10']
+    const filteredOptions = colsOptions.filter(o => !selectedItems.includes(o));
+
     if (currentStep === 1) {
-      return [
-        <FormItem key="target" {...this.formLayout} label="监控对象">
-          {form.getFieldDecorator('target', {
-            initialValue: formVals.target,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">表一</Option>
-              <Option value="1">表二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="template" {...this.formLayout} label="规则模板">
-          {form.getFieldDecorator('template', {
-            initialValue: formVals.template,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="0">规则模板一</Option>
-              <Option value="1">规则模板二</Option>
-            </Select>
-          )}
-        </FormItem>,
-        <FormItem key="type" {...this.formLayout} label="规则类型">
-          {form.getFieldDecorator('type', {
-            initialValue: formVals.type,
-          })(
-            <RadioGroup>
-              <Radio value="0">强</Radio>
-              <Radio value="1">弱</Radio>
-            </RadioGroup>
-          )}
-        </FormItem>,
-      ];
+      return (
+        <Fragment>
+          {Object.keys(cols_map).map(key => (
+            <FormItem
+              style={{ marginBottom: 16 }}
+              key={key}
+              {...this.formLayout}
+              label={cols_map[key]}
+            >
+              {form.getFieldDecorator(key, {
+                initialValue: colsOptions.includes(cols_map[key]) ? cols_map[key] : undefined,
+              })(
+                <Select
+                  showSearch
+                  onChange={this.handleOptionChange}
+                  style={{ width: '100%' }}
+                >
+                  {filteredOptions.map(item => (
+                    <Option key={item} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
+              )}
+            </FormItem>
+          ))}
+        </Fragment>
+      )
     }
     if (currentStep === 2) {
       return [
@@ -215,17 +247,17 @@ class UpdateForm extends PureComponent {
       ];
     }
     return [
-      <FormItem key="name" {...this.formLayout} label="规则名称">
+      <FormItem key="name" {...this.formLayout} label="数据源名称">
         {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: '请输入规则名称！' }],
+          rules: [{ required: true, message: '请输入数据源名称！' }],
           initialValue: formVals.name,
         })(<Input placeholder="请输入" />)}
       </FormItem>,
-      <FormItem key="desc" {...this.formLayout} label="规则描述">
+      <FormItem key="desc" {...this.formLayout} label="数据描述">
         {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
+          rules: [{ required: false, message: '请输入至少五个字符的数据描述！', min: 5 }],
           initialValue: formVals.desc,
-        })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+        })(<TextArea rows={4} placeholder="请输入描述" />)}
       </FormItem>,
     ];
   };
@@ -277,7 +309,7 @@ class UpdateForm extends PureComponent {
         width={640}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="规则配置"
+        title="初始化配置"
         visible={updateModalVisible}
         footer={this.renderFooter(currentStep)}
         onCancel={() => handleUpdateModalVisible(false, values)}
@@ -327,12 +359,17 @@ class TableList extends PureComponent {
       render: val => <span>{moment(val * 1000).format('YYYY-MM-DD HH:mm')}</span>,
     },
     {
+      title: '初始化进度',
+      dataIndex: 'rate',
+      render: text => <Progress percent={text} size="small" status={null} />
+    },
+    {
       title: '操作',
       render: (text, record) => (
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
           <Divider type="vertical" />
-          <a href="">订阅警报</a>
+          <a onClick={() => this.handleDelete(record.id)}>删除</a>
         </Fragment>
       ),
     },
@@ -372,7 +409,7 @@ class TableList extends PureComponent {
   };
 
   previewItem = id => {
-    router.push(`/profile/basic/${id}`);
+
   };
 
   handleMenuClick = e => {
@@ -383,20 +420,45 @@ class TableList extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'dataSource/delete',
           payload: {
-            key: selectedRows.map(row => row.key),
+            body: {ids: selectedRows.map(row => row.id),}
           },
           callback: () => {
             this.setState({
               selectedRows: [],
-            });
+            }, ()=>{
+              const { dispatch } = this.props;
+              dispatch({
+                type: 'dataSource/fetch',
+                payload: {},
+              }); });
           },
         });
         break;
       default:
         break;
     }
+  };
+
+  handleDelete = id => {
+    const { dispatch } = this.props;
+    dispatch({
+          type: 'dataSource/delete',
+          payload: {
+            body: {ids: [id],}
+          },
+          callback: () => {
+            this.setState({
+              selectedRows: [],
+            }, ()=>{
+              const { dispatch } = this.props;
+              dispatch({
+                type: 'dataSource/fetch',
+                payload: {},
+              }); });
+          },
+        });
   };
 
   handleSelectRows = rows => {
@@ -443,7 +505,7 @@ class TableList extends PureComponent {
         },
       },
     });
-
+    console.log(fields);
     message.success('配置成功');
     this.handleUpdateModalVisible();
   };
@@ -457,7 +519,6 @@ class TableList extends PureComponent {
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
       </Menu>
     );
 
@@ -479,7 +540,6 @@ class TableList extends PureComponent {
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量操作</Button>
                   <Dropdown overlay={menu}>
                     <Button>
                       更多操作 <Icon type="down" />

@@ -33,6 +33,7 @@ export default {
     ageGroups: [],
     analysisSign: '',
     analysisState: {},
+    dataPoint: [],
   },
 
   effects: {
@@ -97,6 +98,19 @@ export default {
           geo: response,
         },
       });
+      const data = response.features.map(fe=>{
+        return {
+          name:fe.properties.name,
+          center: fe.properties.centroid || fe.properties.center
+        }
+      });
+      yield put({
+        type: 'save',
+        payload: {
+          dataPoint: data,
+        },
+      });
+      console.log(data);
     },
     *fetchOrgData(_, { call, put }) {
       const response = yield call(queryOrgData);
@@ -184,6 +198,7 @@ export default {
     clear() {
       return {
         geo: false,
+        dataPoint: [],
         occData: [],
         ageData: [],
         genderData: [],

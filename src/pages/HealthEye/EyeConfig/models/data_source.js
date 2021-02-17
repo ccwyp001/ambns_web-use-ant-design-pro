@@ -1,4 +1,4 @@
-import { queryDataSource, createDataSource } from '@/services/healthEyeSvc';
+import { queryDataSource, createDataSource, deleteDataSource } from '@/services/healthEyeSvc';
 
 export default {
   namespace: 'dataSource',
@@ -30,7 +30,7 @@ export default {
       if (callback) callback();
     },
     *delete({ payload, callback }, { call, put }) {
-      const response = yield call(deleteAgeGroup, payload);
+      const response = yield call(deleteDataSource, payload);
       yield put({
         type: 'save',
         payload: {

@@ -1,9 +1,6 @@
 import React, { memo } from 'react';
 import { Card, Radio } from 'antd';
 import { FormattedMessage } from 'umi/locale';
-import styles from '../Map.less';
-import { Pie } from '@/components/Charts';
-import Yuan from '@/utils/Yuan';
 import {
   G2,
   Chart,
@@ -20,7 +17,6 @@ import {
   Util
 } from "bizcharts";
 import DataSet from "@antv/data-set";
-import ZoneSearch from '@/pages/HealthEye/SubComponents/ZoneSearch';
 
 function mapSum(d) {
   let count = 0;

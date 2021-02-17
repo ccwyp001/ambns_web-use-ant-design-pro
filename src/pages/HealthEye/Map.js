@@ -2,7 +2,7 @@ import React, { Component, PureComponent, Suspense } from 'react';
 import { AsyncLoadBizCharts } from '@/components/Charts/AsyncLoadBizCharts';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Row, Col, Card, Tooltip, Radio, Dropdown, Icon, Button, Modal, Steps } from 'antd';
+import {Row, Col, Card, Tooltip, Radio, Dropdown, Icon, Button, Modal, Steps, Spin} from 'antd';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import Authorized from '@/utils/Authorized';
 import styles from './Map.less';
@@ -280,6 +280,7 @@ class HealthMap extends Component {
       occData,
       ageData,
       geo,
+      dataPoint,
       genderData,
       insData,
       topData,
@@ -380,9 +381,10 @@ class HealthMap extends Component {
                       />
                     }
                     bordered={false}
+                    bodyStyle={{ padding: 4 }}
                   >
                     <div className={styles.mapChart}>
-                      <CenterMap data={geo} townData={townData} colorMap={colorMap} />
+                      <CenterMap data={geo} dataPoint={dataPoint} townData={townData} colorMap={colorMap} />
                     </div>
                   </Card>
                 </Suspense>

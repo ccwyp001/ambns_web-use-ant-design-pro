@@ -11,10 +11,12 @@ import {
   Control,
 } from '@antv/l7-react';
 import * as React from 'react';
+import {Select} from 'antd';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
+const { Option } = Select;
 
-const CenterMap = React.memo(({ data, townData, colorMap }) => {
+const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
   const [popupInfo, setPopupInfo] = React.useState();
   const showPopup = args => {
     // console.log(args);
@@ -23,8 +25,23 @@ const CenterMap = React.memo(({ data, townData, colorMap }) => {
       feature: args.feature,
     });
   };
+  // console.log(dataPoint);
 
   return (
+    <>
+    {/*<Select*/}
+    {/*  defaultValue="黑龙江省"*/}
+    {/*  style={{*/}
+    {/*    width: 120,*/}
+    {/*    zIndex: 2,*/}
+    {/*    position: 'absolute',*/}
+    {/*    right: '10px',*/}
+    {/*    top: '30px',*/}
+    {/*  }}*/}
+    {/*>*/}
+    {/*  <Option value="month">月</Option>*/}
+    {/*  <Option value="week">周</Option>*/}
+    {/*</Select>*/}
     <MapboxScene
       option={{ logoVisible: false }}
       map={{
@@ -44,7 +61,7 @@ const CenterMap = React.memo(({ data, townData, colorMap }) => {
         maxHeight: '600px',
       }}
     >
-      {data && [
+      {data && dataPoint && [
         <PolygonLayer
           key="2"
           options={{
@@ -101,7 +118,11 @@ const CenterMap = React.memo(({ data, townData, colorMap }) => {
         <PointLayer
           key="4"
           source={{
-            data,
+            dataPoint,
+            parser: {
+              type: "json",
+              coordinates: "center"
+            }
           }}
           color={{
             value: '#3e3e3e',
@@ -146,6 +167,7 @@ const CenterMap = React.memo(({ data, townData, colorMap }) => {
         ]) ||
         []}
     </MapboxScene>
+    </>
   );
 });
 

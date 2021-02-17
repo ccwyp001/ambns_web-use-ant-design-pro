@@ -245,7 +245,7 @@ class ZoneSearch2 extends PureComponent {
             <FormItem label="诊断日期" {...this.formLayout}>
               {getFieldDecorator('clinicTime')(
                 <RangePicker
-                  // style={{ width: '100%' }}
+                  style={{ width: '100%' }}
                   // defaultValue={[moment().startOf('day'), moment().endOf('day')]}
                   format="YYYY-MM-DD"
                 />
@@ -323,7 +323,7 @@ class ZoneSearch2 extends PureComponent {
                 >
                   <Radio.Button value={2}>类目</Radio.Button>
                   <Radio.Button value={3}>亚目</Radio.Button>
-                  <Radio.Button value={4}>编码</Radio.Button>
+                  <Radio.Button value={4}>细目</Radio.Button>
                 </Radio.Group>
               )}
             </FormItem>

@@ -84,12 +84,21 @@ export async function createAgeGroup(params = {}) {
 }
 
 export async function queryDataSource(params) {
-  return request(`/api/v1/health_eye/config/source?${stringify(params)}`);
+  return request(`/api/v1/health_eye/config/sources?${stringify(params)}`);
 }
 
 export async function createDataSource(params) {
-  return request(`/api/v1/health_eye/config/source?${stringify(params.query)}`, {
+  return request(`/api/v1/health_eye/config/sources?${stringify(params.query)}`, {
     method: 'POST',
+    body: {
+      ...params.body,
+    },
+  });
+}
+
+export async function deleteDataSource(params) {
+  return request(`/api/v1/health_eye/config/sources?${stringify(params.query)}`, {
+    method: 'DELETE',
     body: {
       ...params.body,
     },

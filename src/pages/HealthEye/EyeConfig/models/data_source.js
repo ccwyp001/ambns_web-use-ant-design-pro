@@ -1,4 +1,4 @@
-import { queryDataSource, createDataSource, deleteDataSource } from '@/services/healthEyeSvc';
+import { queryDataSource, updateDataSource, deleteDataSource } from '@/services/healthEyeSvc';
 
 export default {
   namespace: 'dataSource',
@@ -19,8 +19,18 @@ export default {
       });
       if (callback) callback();
     },
+    *fetchRate({ payload, callback }, { call, put }) {
+      const response = yield call(queryDataSource, payload);
+      yield put({
+        type: 'save',
+        payload: {
+          source: response,
+        },
+      });
+      if (callback) callback();
+    },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateAgeGroup, payload);
+      const response = yield call(updateDataSource, payload);
       yield put({
         type: 'save',
         payload: {
@@ -31,16 +41,6 @@ export default {
     },
     *delete({ payload, callback }, { call, put }) {
       const response = yield call(deleteDataSource, payload);
-      yield put({
-        type: 'save',
-        payload: {
-          updateState: 1,
-        },
-      });
-      if (callback) callback();
-    },
-    *create({ payload, callback }, { call, put }) {
-      const response = yield call(createDataSource, payload);
       yield put({
         type: 'save',
         payload: {

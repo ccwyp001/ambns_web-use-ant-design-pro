@@ -256,8 +256,7 @@ class ZoneSearch2 extends PureComponent {
             <FormItem label="乡镇" {...this.formLayout}>
               {getFieldDecorator('town')(
                 <Select placeholder="请选择" style={{ width: '100%' }} allowClear>
-                  <Option value="0">玉城</Option>
-                  <Option value="1">楚门</Option>
+                  <Option value="0">功能待完善，敬请期待</Option>
                 </Select>
               )}
             </FormItem>
@@ -293,10 +292,7 @@ class ZoneSearch2 extends PureComponent {
             <FormItem label="职业" {...this.formLayout}>
               {getFieldDecorator('occupation')(
                 <Select allowClear placeholder="请选择">
-                  <Option value="0">打工的</Option>
-                  <Option value="1">不可能打工的</Option>
-                  <Option value="2">这一辈子</Option>
-                  <Option value="3">都不打工的</Option>
+                  <Option value="0">功能待完善，敬请期待</Option>
                 </Select>
               )}
             </FormItem>

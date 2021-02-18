@@ -104,14 +104,11 @@ class UpdateForm extends PureComponent {
       formVals: {
         name: props.values.name,
         desc: props.values.desc,
-        key: props.values.key,
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        id: props.values.id,
+        colsConfig: props.values.colsConfig,
+        cols: props.values.cols,
       },
       currentStep: 0,
-      selectedItems: [],
     };
 
     this.formLayout = {
@@ -173,22 +170,20 @@ class UpdateForm extends PureComponent {
 
   renderContent = (currentStep, formVals) => {
     const { form } = this.props;
-    const { selectedItems } = this.state;
     const cols_map = {
+      'IDCARD': '身份证号',
       'NL': '年龄',
-      'ORG_CODE': '诊断单位',
-      'INS': '险种',
-      'TOWN': '乡镇',
       'XB': '性别',
       'OCCUPATION': '职业',
+      'TOWN': '乡镇',
       'COMMUNITY': '村居',
-      'CLINIC_TIME': '诊断时间',
+      'INS': '险种',
       'SICKEN_TIME': '发病时间',
-      'IDCARD': '身份证号',
+      'CLINIC_TIME': '诊断时间',
       'ICD10': 'ICD10',
+      'ORG_CODE': '诊断单位',
     };
-    const colsOptions = ['年龄', '诊断单位', '险种', '乡镇', '性别', '职业', '村居', '诊断时间', '发病时间', '身份证号', 'ICD10']
-    const filteredOptions = colsOptions.filter(o => !selectedItems.includes(o));
+    const colsOptions = formVals.cols;
 
     if (currentStep === 1) {
       return (
@@ -200,15 +195,19 @@ class UpdateForm extends PureComponent {
               {...this.formLayout}
               label={cols_map[key]}
             >
-              {form.getFieldDecorator(key, {
-                initialValue: colsOptions.includes(cols_map[key]) ? cols_map[key] : undefined,
+              {form.getFieldDecorator(`colsConfig.${key}`, {
+                initialValue:
+                  colsOptions.includes(key) ? key :
+                  colsOptions.includes(cols_map[key])
+                  ? cols_map[key]
+                  : undefined,
               })(
                 <Select
                   showSearch
                   onChange={this.handleOptionChange}
                   style={{ width: '100%' }}
                 >
-                  {filteredOptions.map(item => (
+                  {colsOptions.map(item => (
                     <Option key={item} value={item}>
                       {item}
                     </Option>
@@ -222,8 +221,8 @@ class UpdateForm extends PureComponent {
     }
     if (currentStep === 2) {
       return [
-        <FormItem key="time" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('time', {
+        <FormItem key="update_at" {...this.formLayout} label="开始时间">
+          {form.getFieldDecorator('update_at', {
             rules: [{ required: true, message: '请选择开始时间！' }],
           })(
             <DatePicker
@@ -232,16 +231,6 @@ class UpdateForm extends PureComponent {
               format="YYYY-MM-DD HH:mm:ss"
               placeholder="选择开始时间"
             />
-          )}
-        </FormItem>,
-        <FormItem key="frequency" {...this.formLayout} label="调度周期">
-          {form.getFieldDecorator('frequency', {
-            initialValue: formVals.frequency,
-          })(
-            <Select style={{ width: '100%' }}>
-              <Option value="month">月</Option>
-              <Option value="week">周</Option>
-            </Select>
           )}
         </FormItem>,
       ];
@@ -317,8 +306,8 @@ class UpdateForm extends PureComponent {
       >
         <Steps style={{ marginBottom: 28 }} size="small" current={currentStep}>
           <Step title="基本信息" />
-          <Step title="配置规则属性" />
-          <Step title="设定调度周期" />
+          <Step title="配置映射规则" />
+          <Step title="设定附加属性" />
         </Steps>
         {this.renderContent(currentStep, formVals)}
       </Modal>
@@ -330,6 +319,7 @@ class UpdateForm extends PureComponent {
 @connect(({ dataSource, loading }) => ({
   dataSource,
   loading: loading.models.dataSource,
+  fetchingSource: loading.effects['dataSource/fetch'],
 }))
 @Form.create()
 class TableList extends PureComponent {
@@ -341,6 +331,14 @@ class TableList extends PureComponent {
     formValues: {},
     stepFormValues: {},
   };
+  timerRate = 0;
+  intervalRate = 1000;
+
+  statusMap = {
+    0: 'active',
+    1: 'success',
+    2: 'exception',
+  }
 
   columns = [
     {
@@ -361,7 +359,7 @@ class TableList extends PureComponent {
     {
       title: '初始化进度',
       dataIndex: 'rate',
-      render: text => <Progress percent={text} size="small" status={null} />
+      render: (text, record) => <Progress percent={text} size="small" status={this.statusMap[record.status]} />
     },
     {
       title: '操作',
@@ -376,11 +374,53 @@ class TableList extends PureComponent {
   ];
 
   componentDidMount() {
+    this.dispatchSource({}, this.tickRate);
+  };
+  componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dataSource/fetch',
+      type: 'dataSource/clear',
     });
-  }
+    clearTimeout(this.timerRate);
+    // clearTimeout(this.timeoutId);
+  };
+
+  dispatchSource = (payload = {}, callback) => {
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'dataSource/fetch',
+      payload,
+      callback: callback,
+    });
+  };
+
+  tickRate = () => {
+    this.timerRate = setTimeout(() => {
+      const {
+        dataSource: { source:{ list=[] } },
+      } = this.props;
+      let filterDataSource = [];
+      // console.log(list);
+      list.forEach(s => {
+        if (s.rate > 0 && s.rate < 100) filterDataSource.push(s);
+      })
+      if (filterDataSource.length === 0){
+        clearTimeout(this.timerRate)
+      }
+      else {
+        this.handleFetchRate(this.tickRate)
+      }
+    }, this.intervalRate);
+  };
+
+  handleFetchRate = (callback) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dataSource/fetchRate',
+      payload: {},
+      callback: callback,
+    });
+  };
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -495,15 +535,14 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     const { formValues } = this.state;
     dispatch({
-      type: 'rule/update',
+      type: 'dataSource/update',
       payload: {
         query: formValues,
         body: {
-          name: fields.name,
-          desc: fields.desc,
-          key: fields.key,
+          ...fields
         },
       },
+      callback: () => this.handleFetchRate(this.tickRate),
     });
     console.log(fields);
     message.success('配置成功');
@@ -513,7 +552,7 @@ class TableList extends PureComponent {
   render() {
     const {
       dataSource: { source },
-      loading,
+      fetchingSource,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
@@ -550,8 +589,9 @@ class TableList extends PureComponent {
             </div>
             <StandardTable
               noNeedAlert
+              rowKey={'id'}
               selectedRows={selectedRows}
-              loading={loading}
+              loading={fetchingSource}
               data={source}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

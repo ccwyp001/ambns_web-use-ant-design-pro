@@ -96,6 +96,15 @@ export async function createDataSource(params) {
   });
 }
 
+export async function updateDataSource(params) {
+  return request(`/api/v1/health_eye/config/sources?${stringify(params.query)}`, {
+    method: 'PUT',
+    body: {
+      ...params.body,
+    },
+  });
+}
+
 export async function deleteDataSource(params) {
   return request(`/api/v1/health_eye/config/sources?${stringify(params.query)}`, {
     method: 'DELETE',

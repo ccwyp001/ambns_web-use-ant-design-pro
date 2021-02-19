@@ -80,13 +80,24 @@ class OrgDis extends React.Component {
     ;
     return (
       <div>
-        <Chart height={height} data={dv} forceFit padding='auto'>
+        <Chart
+          height={height}
+          data={dv}
+          forceFit
+          // padding={[ 'auto', 'auto', 'auto', 100]}
+          padding={'auto'}
+        >
           <Legend />
           <Coord transpose />
           <Axis
             name="x"
             label={{
-              offset: 12
+              offset: 10,
+              formatter: (val) => {
+                const text = val.replace('玉环市', '')
+                return `${ text.length > 7 ? text.slice(0,7) + '..' : text }`
+              },
+
             }}
           />
           <Axis name="value" visible={false} />

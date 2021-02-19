@@ -47,7 +47,7 @@ class TimeDis extends React.Component {
   };
 
   render() {
-    const { height } = this.props;
+    const { height, colorMap } = this.props;
     const { data } = this.state;
 
     const timeScale = {
@@ -116,8 +116,21 @@ class TimeDis extends React.Component {
             type: "line"
           }}
           />
-          <Geom type="areaStack" position="x*value" color="icdCode" />
-          <Geom type="lineStack" position="x*value" size={2} color="icdCode" />
+          <Geom
+            type="areaStack"
+            position="x*value"
+            color={['icdCode', (item) =>{
+              return colorMap[item]
+            }]}
+          />
+          <Geom
+            type="lineStack"
+            position="x*value"
+            size={2}
+            color={['icdCode', (item) =>{
+              return colorMap[item]
+            }]}
+          />
         </Chart>
         <Slider
           data={dvSlider}

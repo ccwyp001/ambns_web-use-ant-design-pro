@@ -115,6 +115,7 @@ class HealthMap extends Component {
   state = {
     playOrNot: false,
     modalVisible: false,
+    delayLoading: false,
   };
   timerAnalysis = 0;
   intervalAnalysis = 500;
@@ -158,7 +159,10 @@ class HealthMap extends Component {
     this.timerAnalysis = setTimeout(() => {
       const {map: {analysisState, analysisSign}} = this.props;
       if (analysisState && analysisState.current >= 3){
-        clearTimeout(this.timerAnalysis)
+        clearTimeout(this.timerAnalysis);
+        this.setState({
+          delayLoading: true,
+        }, () => setTimeout(()=> this.setState({delayLoading: false})), 3000);
         this.dispatchAll({sign: analysisSign})
       }
       else {
@@ -292,7 +296,7 @@ class HealthMap extends Component {
       ageGroups,
       analysisState,
     } = map;
-    const { playOrNot, modalVisible } = this.state;
+    const { playOrNot, modalVisible, delayLoading } = this.state;
     const colorMap = {};
     topData.map((item, index) => {
       colorMap[item.x] = this.colors[index];
@@ -327,7 +331,7 @@ class HealthMap extends Component {
           modalVisible={modalVisible}
           handleModalVisible={this.handleModalVisible}
           currentStep={analysisState}
-          loading={loading}
+          loading={loading || delayLoading}
         />
         <Row gutter={16}>
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>
@@ -340,13 +344,13 @@ class HealthMap extends Component {
                 style={{ marginBottom: 16 }}
                 bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
-                extra={
-                  <div className={styles.salesCardExtra}>
-                    <span className={styles.iconGroup} onClick={this.playRound}>
-                      {playOrNot ? <Icon type="pause-circle" /> : <Icon type="play-circle" />}
-                    </span>
-                  </div>
-                }
+                // extra={
+                //   <div className={styles.salesCardExtra}>
+                //     <span className={styles.iconGroup} onClick={this.playRound}>
+                //       {playOrNot ? <Icon type="pause-circle" /> : <Icon type="play-circle" />}
+                //     </span>
+                //   </div>
+                // }
               >
                 <DiseaseDis
                   topData={topData}
@@ -361,10 +365,10 @@ class HealthMap extends Component {
                 loading={fetchingOrgData}
                 title={<FormattedMessage id="app.health_map.OrgDis" defaultMessage="机构分布" />}
                 style={{ marginBottom: 16 }}
-                bodyStyle={{ textAlign: 'center' }}
+                bodyStyle={{ textAlign: 'center', padding: 16 }}
                 bordered={false}
               >
-                <OrgDis orgData={orgData} height={336} colorMap={colorMap} />
+                <OrgDis orgData={orgData} height={352} colorMap={colorMap} />
               </Card>
             </Suspense>
           </Col>
@@ -458,7 +462,7 @@ class HealthMap extends Component {
                 // bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <TimeDis height={163} timeData={timeData} />
+                <TimeDis height={188} timeData={timeData} colorMap={colorMap}/>
               </Card>
             </Suspense>
           </Col>

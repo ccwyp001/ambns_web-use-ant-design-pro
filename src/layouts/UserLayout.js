@@ -7,7 +7,7 @@ import GlobalFooter from '@/components/GlobalFooter';
 import DocumentTitle from 'react-document-title';
 import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
-import logo from '../assets/120logo.svg';
+import logo from '../assets/yhwj_logo.png';
 import getPageTitle from '@/utils/getPageTitle';
 
 const links = [
@@ -63,7 +63,7 @@ class UserLayout extends Component {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>玉环市 120</span>
+                  <span className={styles.title}>YuHuan Health Eye</span>
                 </Link>
               </div>
               <div className={styles.desc}></div>

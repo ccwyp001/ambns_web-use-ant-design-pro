@@ -101,7 +101,8 @@ export default {
       const data = response.features.map(fe=>{
         return {
           name:fe.properties.name,
-          center: fe.properties.centroid || fe.properties.center
+          x: fe.properties.center[0],
+          y: fe.properties.center[1]
         }
       });
       yield put({
@@ -110,7 +111,6 @@ export default {
           dataPoint: data,
         },
       });
-      console.log(data);
     },
     *fetchOrgData(_, { call, put }) {
       const response = yield call(queryOrgData);

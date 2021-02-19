@@ -34,17 +34,17 @@ class TownDis extends React.PureComponent {
     height: 425
 
   };
-
+  dv = new DataSet().createView();
   constructor(props) {
     super(props);
+
   }
 
   render() {
     const { height, townData:data, colorMap } = this.props;
 
-    const ds = new DataSet();
-    const dv = ds.createView().source(data);
-    dv.source(data).transform({
+    this.dv.source(data);
+    this.dv.source(data).transform({
       type: "sort",
       callback(a,b){
         return mapSum(a.icds) - mapSum(b.icds);
@@ -75,17 +75,17 @@ class TownDis extends React.PureComponent {
       <Card
         // loading={loading}
         style={{ marginBottom: 16 , opacity:0.95}}
-        bodyStyle={{ padding: 16}}
+        bodyStyle={{ padding: 8}}
         bordered={false}
       >
         <h4>乡镇分布</h4>
         <Chart
           height={height}
-          data={dv}
+          data={this.dv}
           // forceFit
           padding='auto'
           // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
-          width={200}
+          width={220}
         >
           <Legend position='bottom-center' />
           <Coord transpose />

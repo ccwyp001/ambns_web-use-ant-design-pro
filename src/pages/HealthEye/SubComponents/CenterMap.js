@@ -11,13 +11,14 @@ import {
   Control,
 } from '@antv/l7-react';
 import * as React from 'react';
-import {Select} from 'antd';
+import {Select, Switch} from 'antd';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
 const { Option } = Select;
 
-const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
+const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
   const [popupInfo, setPopupInfo] = React.useState();
+  const [townDisVisible, setTownDisVisible] = React.useState(false);
   const showPopup = args => {
     // console.log(args);
     setPopupInfo({
@@ -25,10 +26,23 @@ const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
       feature: args.feature,
     });
   };
-  // console.log(dataPoint);
+  const onChange = () => {
+    setTownDisVisible(!townDisVisible)
+  };
 
   return (
     <>
+      <Switch
+        defaultChecked={false}
+        onChange={onChange}
+        style={{
+        width: 20,
+        zIndex: 2,
+        position: 'absolute',
+        right: '10px',
+        top: '20px',
+      }}
+      />
     {/*<Select*/}
     {/*  defaultValue="黑龙江省"*/}
     {/*  style={{*/}
@@ -61,7 +75,7 @@ const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
         maxHeight: '600px',
       }}
     >
-      {data && dataPoint && [
+      {data && townData && [
         <PolygonLayer
           key="2"
           options={{
@@ -69,10 +83,23 @@ const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
           }}
           source={{
             data,
+            transforms: [
+              {
+                type: 'join',
+                sourceField: 'x', //data1 对应字段名
+                targetField: 'name', // data 对应字段名 绑定到的地理数据
+                data: townData,
+              },]
           }}
           color={{
             field: 'name',
-            values: ['#732200', '#CC3D00', '#FF6619', '#FF9466', '#FFC1A6', '#FCE2D7'].reverse(),
+            values: ['#732200',
+              '#CC3D00',
+              '#FF6619',
+              '#ff9466',
+              '#FFC1A6',
+              '#FCE2D7',
+              '#ffe3e3'].reverse(),
           }}
           shape={{
             values: 'fill',
@@ -103,7 +130,7 @@ const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
           key="3"
           source={{ data }}
           color={{
-            values: ['#fff'],
+            values: ['#363535'],
           }}
           size={{
             values: 1,
@@ -117,11 +144,13 @@ const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
         />,
         <PointLayer
           key="4"
+          // source={{data}}
           source={{
-            dataPoint,
+            data: dataPoint,
             parser: {
               type: "json",
-              coordinates: "center"
+              x: "x",
+              y: "y"
             }
           }}
           color={{
@@ -135,18 +164,22 @@ const CenterMap = React.memo(({ data, dataPoint=[], townData, colorMap }) => {
             values: 12,
           }}
           style={{
+            textAnchor: 'center',
+            textOffset: [ 0, 0 ],
             opacity: 1,
             strokeOpacity: 1,
             strokeWidth: 0,
             textAllowOverlap: false,
             stroke: '#000',
-            padding: [2, 2],
+            padding: [1, 1],
           }}
         />,
+      ]}
+      {townDisVisible && townData && [
         <LabelControl position="topright" key="19" style={{ position: 'relative' }}>
           <TownDis townData={townData} colorMap={colorMap} />
-        </LabelControl>,
-      ]}
+        </LabelControl>,]
+      }
       {(popupInfo &&
         [
           // <Popup

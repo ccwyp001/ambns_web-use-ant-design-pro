@@ -40,12 +40,12 @@ export default [
             routes: [
               {
                 path: '/health_eye/config',
-                redirect: '/health_eye/config/base',
+                redirect: '/health_eye/config/sources',
               },
-              {
-                path: '/health_eye/config/base',
-                component: './HealthEye/EyeConfig/BaseView',
-              },
+              // {
+              //   path: '/health_eye/config/base',
+              //   component: './HealthEye/EyeConfig/BaseView',
+              // },
               {
                 path: '/health_eye/config/sources',
                 component: './HealthEye/EyeConfig/DataSource',
@@ -54,10 +54,10 @@ export default [
                 path: '/health_eye/config/agesplit',
                 component: './HealthEye/EyeConfig/AgeSplit',
               },
-              {
-                path: '/health_eye/config/translation',
-                component: './HealthEye/EyeConfig/TranslationSame',
-              },
+              // {
+              //   path: '/health_eye/config/translation',
+              //   component: './HealthEye/EyeConfig/TranslationSame',
+              // },
             ],
           },
         ],

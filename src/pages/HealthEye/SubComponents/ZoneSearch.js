@@ -48,9 +48,9 @@ class ZoneSearch2 extends PureComponent {
     e.preventDefault();
     const { form, handleSearch, handleModalVisible } = this.props;
     const { formValues: oldValue } = this.state;
-    handleModalVisible(true);
     form.validateFields((err, fieldsValue) => {
       if (err) return;
+      handleModalVisible(true);
       const rangeValue = fieldsValue.clinicTime;
       const rangeValue2 = fieldsValue.sickenTime;
       console.log(rangeValue);
@@ -327,7 +327,7 @@ class ZoneSearch2 extends PureComponent {
           <Col md={18} sm={24}>
             <FormItem label="疾病诊断" {...this.formLayout}>
               {getFieldDecorator('icd10', {
-                rules: [{ type: 'array', max: 6, message: 'max len is 6' }],
+                rules: [{ type: 'array', max: 10, message: 'max len is 10' }],
               })(
                 <Select
                   mode="multiple"

@@ -75,31 +75,51 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
         maxHeight: '600px',
       }}
     >
-      {data && townData && [
+      {data && townData.length && [
         <PolygonLayer
           key="2"
           options={{
             autoFit: true,
           }}
           source={{
-            data,
+            data: data,
+            autoFit: true,
+            parser: {
+              type: 'geojson',
+            },
             transforms: [
               {
-                type: 'join',
-                sourceField: 'x', //data1 对应字段名
-                targetField: 'name', // data 对应字段名 绑定到的地理数据
-                data: townData,
-              },]
+                type: 'map',
+                callback: (item) => {
+                  const townName = item.name;
+                  const data = townData.filter(it => it.x === townName)
+                  item.value = data[0] && data[0].y || 0
+                  return item;
+                }
+              }
+              // {
+              //   type: 'join',
+              //   sourceField: 'properties.name',
+              //   targetField: 'x', // data 对应字段名 绑定到的地理数据
+              //   data: townData,
+              //   callback: () => console.log('123345'),
+              // }
+            ]
           }}
           color={{
-            field: 'name',
-            values: ['#732200',
-              '#CC3D00',
-              '#FF6619',
-              '#ff9466',
-              '#FFC1A6',
-              '#FCE2D7',
-              '#ffe3e3'].reverse(),
+            field: 'value',
+            values: (value) => {
+              if (value > 1000) return '#732200';
+              if (value > 800) return '#CC3D00';
+              if (value > 600) return '#FF6619';
+              return '#FCE2D7'
+            }
+            // values: ['#732200',
+            //   '#CC3D00',
+            //   '#FF6619',
+            //   '#ff9466',
+            //   '#FFC1A6',
+            //   '#FCE2D7',].reverse(),
           }}
           shape={{
             values: 'fill',
@@ -111,7 +131,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
             option: { color: '#d28329' },
           }}
           onLayerLoaded={(layer, scene) => {
-            layer.setActive(1);
+            // layer.setActive(1);
           }}
           // select={{
           //   option: { color: '#ff1642' }
@@ -161,7 +181,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
             values: 'text',
           }}
           size={{
-            values: 12,
+            values: 16,
           }}
           style={{
             textAnchor: 'center',

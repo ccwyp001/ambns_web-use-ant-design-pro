@@ -16,19 +16,19 @@ class Info extends Component {
     super(props);
     const { match, location } = props;
     const menuMap = {
-      base: <FormattedMessage id="app.health_map.config.base" defaultMessage="基本配置" />,
+      // base: <FormattedMessage id="app.health_map.config.base" defaultMessage="基本配置" />,
       sources: (
         <FormattedMessage id="app.health_map.config.sources" defaultMessage="数据源配置" />
       ),
       agesplit: (
         <FormattedMessage id="app.health_map.config.agesplit" defaultMessage="年龄组配置" />
       ),
-      translation: (
-        <FormattedMessage
-          id="app.health_map.config.translation"
-          defaultMessage="同义词转换"
-        />
-      ),
+      // translation: (
+      //   <FormattedMessage
+      //     id="app.health_map.config.translation"
+      //     defaultMessage="同义词转换"
+      //   />
+      // ),
     };
     const key = location.pathname.replace(`${match.path}/`, '');
     this.state = {

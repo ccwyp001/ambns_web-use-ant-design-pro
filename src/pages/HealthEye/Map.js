@@ -48,7 +48,7 @@ class SelectModal extends PureComponent {
   }
 
   getModalContent = () => {
-    const { handleModalVisible, currentStep:{current, done, total}, loading } = this.props;
+    const { handleModalVisible, delayLoading, currentStep:{current, done, total}, loading } = this.props;
     return (
       <div>
         <div className={styles.stepsContent}>
@@ -66,7 +66,7 @@ class SelectModal extends PureComponent {
             />
           </Steps>
         </div>
-        {current >= 3 ?
+        {current >= 3 && delayLoading ?
         <div style={{ textAlign: 'center' }}>
           <Button type="primary" loading={loading} onClick={() => handleModalVisible(false)}>
             {loading ? '重新加载数据中' : '知道了'}
@@ -161,9 +161,12 @@ class HealthMap extends Component {
       if (analysisState && analysisState.current >= 3){
         clearTimeout(this.timerAnalysis);
         this.setState({
-          delayLoading: true,
-        }, () => setTimeout(()=> this.setState({delayLoading: false})), 3000);
-        this.dispatchAll({sign: analysisSign})
+            delayLoading: true,
+        });
+        if (analysisState.current === 3) {
+          setTimeout(() => this.handleModalVisible(false), 3000)
+          this.dispatchAll({sign: analysisSign})
+        }
       }
       else {
         this.handleAnalysisSelect(this.tickAnalysis)
@@ -212,6 +215,7 @@ class HealthMap extends Component {
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
+      delayLoading: false,
     });
   };
 
@@ -331,7 +335,8 @@ class HealthMap extends Component {
           modalVisible={modalVisible}
           handleModalVisible={this.handleModalVisible}
           currentStep={analysisState}
-          loading={loading || delayLoading}
+          loading={loading}
+          delayLoading={delayLoading}
         />
         <Row gutter={16}>
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>

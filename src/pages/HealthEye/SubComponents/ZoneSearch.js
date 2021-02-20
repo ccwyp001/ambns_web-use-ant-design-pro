@@ -53,7 +53,7 @@ class ZoneSearch2 extends PureComponent {
       handleModalVisible(true);
       const rangeValue = fieldsValue.clinicTime;
       const rangeValue2 = fieldsValue.sickenTime;
-      console.log(rangeValue);
+      // console.log(rangeValue);
       const formValues = {
         ...oldValue,
         ...fieldsValue,
@@ -72,7 +72,7 @@ class ZoneSearch2 extends PureComponent {
             ]) ||
           undefined,
       };
-      console.log(formValues);
+      // console.log(formValues);
       this.setState(
         {
           formValues,
@@ -103,7 +103,7 @@ class ZoneSearch2 extends PureComponent {
     let page = scrollPage;
     if (value) {
       page = 1;
-      console.log(value);
+      // console.log(value);
     }
     value = value || icd10Value;
     if (value.length < 2) {
@@ -130,7 +130,7 @@ class ZoneSearch2 extends PureComponent {
     if (target.scrollTop + target.offsetHeight === target.scrollHeight) {
       const { scrollPage } = this.state;
       const nextScrollPage = scrollPage + 1;
-      console.log(nextScrollPage);
+      // console.log(nextScrollPage);
       this.setState(
         {
           scrollPage: nextScrollPage,

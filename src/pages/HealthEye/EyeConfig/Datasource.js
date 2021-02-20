@@ -184,6 +184,7 @@ class UpdateForm extends PureComponent {
       'ORG_CODE': '诊断单位',
     };
     const colsOptions = formVals.cols;
+    const colsConfig = formVals.colsConfig;
 
     if (currentStep === 1) {
       return (
@@ -197,6 +198,7 @@ class UpdateForm extends PureComponent {
             >
               {form.getFieldDecorator(`colsConfig.${key}`, {
                 initialValue:
+                  colsConfig[key] ? colsConfig[key] :
                   colsOptions.includes(key) ? key :
                   colsOptions.includes(cols_map[key])
                   ? cols_map[key]
@@ -221,16 +223,19 @@ class UpdateForm extends PureComponent {
     }
     if (currentStep === 2) {
       return [
-        <FormItem key="update_at" {...this.formLayout} label="开始时间">
-          {form.getFieldDecorator('update_at', {
-            rules: [{ required: true, message: '请选择开始时间！' }],
+        <FormItem key="base_addr" {...this.formLayout} label="基准地址">
+          {form.getFieldDecorator('base_addr', {
+            rules: [{ required: true, message: '请选择基准地址' }],
+            initialValue: '浙江省台州市玉环市',
           })(
-            <DatePicker
-              style={{ width: '100%' }}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              placeholder="选择开始时间"
-            />
+            <Select
+                  showSearch
+                  style={{ width: '100%' }}
+                >
+                  <Option key={'浙江省台州市玉环市'} value={'浙江省台州市玉环市'}>
+                    浙江省台州市玉环市
+                  </Option>
+                </Select>
           )}
         </FormItem>,
       ];
@@ -244,7 +249,7 @@ class UpdateForm extends PureComponent {
       </FormItem>,
       <FormItem key="desc" {...this.formLayout} label="数据描述">
         {form.getFieldDecorator('desc', {
-          rules: [{ required: false, message: '请输入至少五个字符的数据描述！', min: 5 }],
+          rules: [{ required: false, message: '要写就多写点！', min: 5 }],
           initialValue: formVals.desc,
         })(<TextArea rows={4} placeholder="请输入描述" />)}
       </FormItem>,

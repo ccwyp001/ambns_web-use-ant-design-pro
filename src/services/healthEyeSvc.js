@@ -14,36 +14,36 @@ export async function queryAnalysisRecord(params = {}) {
   return request(`/api/v1/health_eye/data?${stringify(params)}`);
 }
 
-export async function queryAgeData() {
-  return request('/api/v1/health_eye/data/age_dis');
+export async function queryAgeData(params) {
+  return request(`/api/v1/health_eye/data/age_dis?${stringify(params)}`);
 }
 
-export async function queryOccData() {
-  return request('/api/v1/health_eye/data/occ_dis');
+export async function queryOccData(params) {
+  return request(`/api/v1/health_eye/data/occ_dis?${stringify(params)}`);
 }
 
-export async function queryGenData() {
-  return request('/api/v1/health_eye/data/gender_dis');
+export async function queryGenData(params) {
+  return request(`/api/v1/health_eye/data/gender_dis?${stringify(params)}`);
 }
 
 export async function queryInsData(params) {
   return request(`/api/v1/health_eye/data/ins_dis?${stringify(params)}`);
 }
 
-export async function queryTopData() {
-  return request('/api/v1/health_eye/data/top');
+export async function queryTopData(params) {
+  return request(`/api/v1/health_eye/data/top?${stringify(params)}`);
 }
 
-export async function queryOrgData() {
-  return request('/api/v1/health_eye/data/org_dis');
+export async function queryOrgData(params) {
+  return request(`/api/v1/health_eye/data/org_dis?${stringify(params)}`);
 }
 
-export async function queryTimeData() {
-  return request('/api/v1/health_eye/data/time_dis');
+export async function queryTimeData(params) {
+  return request(`/api/v1/health_eye/data/time_dis?${stringify(params)}`);
 }
 
-export async function queryTownData() {
-  return request('/api/v1/health_eye/data/town_dis');
+export async function queryTownData(params) {
+  return request(`/api/v1/health_eye/data/town_dis?${stringify(params)}`);
 }
 
 export async function queryIcdData(params) {

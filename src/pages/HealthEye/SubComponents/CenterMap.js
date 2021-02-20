@@ -108,18 +108,19 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
           }}
           color={{
             field: 'value',
-            values: (value) => {
-              if (value > 1000) return '#732200';
-              if (value > 800) return '#CC3D00';
-              if (value > 600) return '#FF6619';
-              return '#FCE2D7'
-            }
-            // values: ['#732200',
-            //   '#CC3D00',
-            //   '#FF6619',
-            //   '#ff9466',
-            //   '#FFC1A6',
-            //   '#FCE2D7',].reverse(),
+            // values: (value) => {
+            //   if (value > 1000) return '#732200';
+            //   if (value > 800) return '#CC3D00';
+            //   if (value > 600) return '#FF6619';
+            //   return '#FCE2D7'
+            // }
+            values: [
+              '#732200',
+              '#CC3D00',
+              '#FF6619',
+              '#ff9466',
+              '#FFC1A6',
+              '#FCE2D7',].reverse(),
           }}
           shape={{
             values: 'fill',

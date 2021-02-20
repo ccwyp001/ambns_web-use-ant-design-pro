@@ -262,11 +262,19 @@ class HealthMap extends Component {
     });
     dispatch({
       type: 'map/fetchSourceList',
-      payload,
+      payload: {
+        enabled: 1,
+        pageSize: 100,
+        ...payload,
+      },
     });
     dispatch({
       type: 'map/fetchAgeGroup',
-      payload,
+      payload: {
+        enabled: 1,
+        pageSize: 100,
+        ...payload,
+      },
     });
   };
 

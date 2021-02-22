@@ -112,8 +112,8 @@ export default {
         },
       });
     },
-    *fetchOrgData(_, { call, put }) {
-      const response = yield call(queryOrgData);
+    *fetchOrgData({ payload }, { call, put }) {
+      const response = yield call(queryOrgData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -121,8 +121,8 @@ export default {
         },
       });
     },
-    *fetchTownData(_, { call, put }) {
-      const response = yield call(queryTownData);
+    *fetchTownData({ payload }, { call, put }) {
+      const response = yield call(queryTownData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -130,8 +130,8 @@ export default {
         },
       });
     },
-    *fetchTimeData(_, { call, put }) {
-      const response = yield call(queryTimeData);
+    *fetchTimeData({ payload }, { call, put }) {
+      const response = yield call(queryTimeData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -139,8 +139,8 @@ export default {
         },
       });
     },
-    *fetchTopData(_, { call, put }) {
-      const response = yield call(queryTopData);
+    *fetchTopData({ payload }, { call, put }) {
+      const response = yield call(queryTopData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -158,8 +158,8 @@ export default {
       });
     },
 
-    *fetchAgeData(_, { call, put }) {
-      const response = yield call(queryAgeData);
+    *fetchAgeData({ payload }, { call, put }) {
+      const response = yield call(queryAgeData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -168,8 +168,8 @@ export default {
       });
     },
 
-    *fetchGenData(_, { call, put }) {
-      const response = yield call(queryGenData);
+    *fetchGenData({ payload }, { call, put }) {
+      const response = yield call(queryGenData, payload);
       yield put({
         type: 'save',
         payload: {
@@ -177,8 +177,8 @@ export default {
         },
       });
     },
-    *fetchOccData(_, { call, put }) {
-      const response = yield call(queryOccData);
+    *fetchOccData({ payload }, { call, put }) {
+      const response = yield call(queryOccData, payload);
       yield put({
         type: 'save',
         payload: {

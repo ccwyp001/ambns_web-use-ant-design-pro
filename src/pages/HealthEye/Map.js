@@ -355,7 +355,7 @@ class HealthMap extends Component {
                   <FormattedMessage id="app.health_map.DiseaseDis" defaultMessage="疾病分布" />
                 }
                 style={{ marginBottom: 16 }}
-                bodyStyle={{ textAlign: 'center' }}
+                bodyStyle={{ textAlign: 'center', padding: 16 }}
                 bordered={false}
                 // extra={
                 //   <div className={styles.salesCardExtra}>
@@ -367,7 +367,7 @@ class HealthMap extends Component {
               >
                 <DiseaseDis
                   topData={topData}
-                  height={336}
+                  height={352}
                   playOrNot={playOrNot}
                   colorMap={colorMap}
                 />

@@ -77,17 +77,25 @@ class DiseaseDis extends React.Component {
           height={height}
           data={dv}
           forceFit
-          padding={{ top: 'auto', right: 30, bottom: 'auto', left: 60 }}
+          padding={{ top: 'auto', right: 30, bottom: 'auto', left: 100 }}
+          // padding={'auto'}
         >
           <Coord transpose />
           <Axis
-            name="x"
+            name="n"
             label={{
               offset: 12,
+              formatter: (val) => {
+                const text = val.replace('玉环市', '')
+                return `${ text.length > 7 ? text.slice(0,7) + '..' : text }`
+              },
             }}
           />
+          <Axis name="x" visible={false} />
           <Axis name="y" visible={false} />
-          <Tooltip showTitle={false} />
+          <Tooltip
+            // showTitle={false}
+          />
           {playOrNot ? (
             <Guide>
               <Guide.Region
@@ -105,7 +113,7 @@ class DiseaseDis extends React.Component {
           ) : null}
           <Geom
             type="interval"
-            position="x*y"
+            position="n*y*x"
             color={[
               'x',
               item => {
@@ -120,6 +128,14 @@ class DiseaseDis extends React.Component {
                 },
               },
             ]}
+            tooltip={['n*y*x', (n, y, x) => {
+              return {
+                //自定义 tooltip 上显示的 title 显示内容等。
+                name: x,
+                title: n,
+                value: y
+              };
+            }]}
           >
             <Label content="y" offset={5} />
           </Geom>

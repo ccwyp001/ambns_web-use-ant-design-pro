@@ -65,11 +65,17 @@ class DiseaseDis extends React.Component {
     const { height, data, displayFlag } = this.state;
     const ds = new DataSet();
     const dv = ds.createView().source(data);
-    dv.source(data).transform({
-      type: 'sort-by',
-      fields: ['y'],
-      order: 'ASC',
-    });
+    dv.source(data)
+      .transform(
+        {
+          type: 'reverse'
+        }
+      )
+    //   .transform({
+    //   type: 'sort-by',
+    //   fields: ['y'],
+    //   order: 'ASC',
+    // });
     // console.log(dv);
     return (
       <div>

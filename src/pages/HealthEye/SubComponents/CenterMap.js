@@ -16,15 +16,12 @@ import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
 const { Option } = Select;
 
-const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
+const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) => {
   const [popupInfo, setPopupInfo] = React.useState();
   const [townDisVisible, setTownDisVisible] = React.useState(false);
   const showPopup = args => {
     // console.log(args);
-    setPopupInfo({
-      lnglat: args.lngLat,
-      feature: args.feature,
-    });
+    setPopupInfo(data.features[args.featureId] ? data.features[args.featureId].properties.name : undefined);
   };
   const onChange = () => {
     setTownDisVisible(!townDisVisible)
@@ -94,6 +91,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
                   const townName = item.name;
                   const data = townData.filter(it => it.x === townName)
                   item.value = data[0] && data[0].y || 0
+                  // console.log(item)
                   return item;
                 }
               }
@@ -108,19 +106,20 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
           }}
           color={{
             field: 'value',
-            // values: (value) => {
-            //   if (value > 1000) return '#732200';
-            //   if (value > 800) return '#CC3D00';
-            //   if (value > 600) return '#FF6619';
-            //   return '#FCE2D7'
-            // }
-            values: [
-              '#732200',
-              '#CC3D00',
-              '#FF6619',
-              '#ff9466',
-              '#FFC1A6',
-              '#FCE2D7',].reverse(),
+            values: (value) => {
+              if (value > 20000) return '#781d2c';
+              if (value > 10000) return '#a8292f';
+              if (value > 5000) return '#cb362d';
+              if (value > 2000) return '#e44f35';
+              if (value > 1000) return '#ef7644';
+              if (value > 500) return '#f39d54';
+              if (value > 200) return '#f6bb67';
+              if (value > 100) return '#fad986';
+              if (value > 50) return '#fceca8';
+              if (value > 20) return '#fff2bd';
+              if (value > 10) return '#fff4d9';
+              return '#ffeeee'
+            }
           }}
           shape={{
             values: 'fill',
@@ -129,7 +128,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
             opacity: 1,
           }}
           active={{
-            option: { color: '#d28329' },
+            option: { color: '#c49c39' },
           }}
           onLayerLoaded={(layer, scene) => {
             // layer.setActive(1);
@@ -138,7 +137,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
           //   option: { color: '#ff1642' }
           // }}
         >
-          <LayerEvent type="click" handler={showPopup} />
+          <LayerEvent type="click" handler={e => {showPopup(e)}} />
           <LayerEvent
             type="unclick"
             handler={() => {
@@ -146,7 +145,6 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
             }}
           />
         </PolygonLayer>,
-        // 图层边界
         <LineLayer
           key="3"
           source={{ data }}
@@ -198,7 +196,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap }) => {
       ]}
       {townDisVisible && townData && [
         <LabelControl position="topright" key="19" style={{ position: 'relative' }}>
-          <TownDis townData={townData} colorMap={colorMap} />
+          <TownDis townData={townData} colorMap={colorMap} topData={topData} popupInfo={popupInfo} />
         </LabelControl>,]
       }
       {(popupInfo &&

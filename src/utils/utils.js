@@ -192,3 +192,18 @@ export const importCDN = (url, name) =>
     };
     document.head.appendChild(dom);
   });
+
+const sum = function (x, y) {
+  return x + y;
+};　　//求和函数
+const square = function (x) {
+  return x * x;
+};　　//数组中每个元素求它的平方
+
+export function stdDev(data) {
+  const mean = data.reduce(sum) / data.length;
+  const deviations = data.map(function (x) {
+    return x - mean;
+  });
+  return  Math.sqrt(deviations.map(square).reduce(sum)/(data.length));
+}

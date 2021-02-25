@@ -47,7 +47,7 @@ class OrgDis extends React.Component {
 
   render() {
     const { height, data } = this.state;
-    const { colorMap } = this.props;
+    const { colorMap, topList } = this.props;
 
     const ds = new DataSet();
     const dv = ds.createView().source(data);
@@ -73,7 +73,7 @@ class OrgDis extends React.Component {
       })
       .transform({
         type: 'fold',
-        fields: data[0] && Object.keys(data[0].icds) || ['x'],
+        fields: topList.length && topList || ['x'],
         key: 'icdCode',
         value: 'value',
       })

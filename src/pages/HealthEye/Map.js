@@ -300,6 +300,7 @@ class HealthMap extends Component {
       genderData,
       insData,
       topData,
+      topList,
       orgData,
       timeData,
       townData,
@@ -381,7 +382,7 @@ class HealthMap extends Component {
                 bodyStyle={{ textAlign: 'center', padding: 16 }}
                 bordered={false}
               >
-                <OrgDis orgData={orgData} height={352} colorMap={colorMap} />
+                <OrgDis orgData={orgData} height={352} colorMap={colorMap} topList={topList} />
               </Card>
             </Suspense>
           </Col>
@@ -401,7 +402,7 @@ class HealthMap extends Component {
                     bodyStyle={{ padding: 4 }}
                   >
                     <div className={styles.mapChart}>
-                      <CenterMap data={geo} dataPoint={dataPoint} townData={townData} colorMap={colorMap} />
+                      <CenterMap data={geo} dataPoint={dataPoint} townData={townData} colorMap={colorMap} topData={topData} />
                     </div>
                   </Card>
                 </Suspense>
@@ -475,7 +476,7 @@ class HealthMap extends Component {
                 // bodyStyle={{ textAlign: 'center' }}
                 bordered={false}
               >
-                <TimeDis height={188} timeData={timeData} colorMap={colorMap}/>
+                <TimeDis height={188} timeData={timeData} colorMap={colorMap} topList={topList}/>
               </Card>
             </Suspense>
           </Col>

@@ -34,6 +34,7 @@ export default {
     analysisSign: '',
     analysisState: {},
     dataPoint: [],
+    topList: [],
   },
 
   effects: {
@@ -147,6 +148,16 @@ export default {
           topData: response,
         },
       });
+      const data = [];
+      response.map(re => {
+        data.push(re.x)
+      })
+      yield put({
+        type: 'save',
+        payload: {
+          topList: data,
+        },
+      });
     },
     *fetchInsData({ payload }, { call, put }) {
       const response = yield call(queryInsData, payload);
@@ -204,6 +215,7 @@ export default {
         genderData: [],
         insData: [],
         topData: [],
+        topList: [],
         orgData: [],
         timeData: [],
         townData: [],

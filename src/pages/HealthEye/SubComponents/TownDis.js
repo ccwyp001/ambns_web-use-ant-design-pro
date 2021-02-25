@@ -34,16 +34,22 @@ class TownDis extends React.PureComponent {
     height: 425
 
   };
-  dv = new DataSet().createView();
+  dv = new DataSet({
+    state: {
+      name: undefined,
+    },
+  }).createView();
+  dv2 = new DataSet().createView();
   constructor(props) {
     super(props);
-
   }
 
   render() {
-    const { height, townData:data, colorMap } = this.props;
-
-    this.dv.source(data);
+    const { height, townData:data, colorMap, topData, popupInfo } = this.props;
+    const topList = [];
+      topData.map(re => {
+        topList.push(re.x)
+      })
     this.dv.source(data).transform({
       type: "sort",
       callback(a,b){
@@ -55,22 +61,66 @@ class TownDis extends React.PureComponent {
         callback(row) {
           const newRow = {...row};
           newRow.count = 0;
-          Object.keys(row.icds).map(key => {
+          const dict = Object.keys(row.icds).sort((a, b) => { return row.icds[a] - row.icds[b] })
+          dict.map(key => {
             newRow[key] = row.icds[key];
             newRow.count += row.icds[key];
             return newRow
           });
-          // console.log(newRow);
           return newRow
         },
       })
       .transform({
         type: 'fold',
-        fields: data[0] && Object.keys(data[0].icds) || ['x'],
+        fields: topList.length && topList || ['x'],
+        key: 'icdCode',
+        value: 'value',
+      });
+    this.dv2.source(data).transform({
+      type: "sort",
+      callback(a,b){
+        return a.y - b.y;
+      }
+    })
+      .transform({
+        type: 'map',
+        callback(row) {
+          const newRow = {...row};
+          const dict = Object.keys(row.icds).sort((a, b) => { return row.icds[a] - row.icds[b] })
+          dict.map(key => {
+            newRow[key] = row.icds[key];
+            return newRow
+          });
+          return newRow
+        },
+      })
+      .transform({
+        type: 'fold',
+        fields: topList.length && topList || ['x'],
         key: 'icdCode',
         value: 'value',
       })
-    ;
+      .transform({
+        type: "sort",
+        callback(a,b){
+          return a.x === b.x && a.value - b.value;
+          }
+      })
+      .transform({
+        type: 'filter',
+        callback(item, idx) {
+          return popupInfo ? item.x === popupInfo : true
+        },
+      })
+      .transform({
+          type: 'map',
+          callback(row) {
+            const newRow = {...row};
+            newRow.icdName = topData.filter(item => item.x === newRow.icdCode)[0].n;
+            // console.log(newRow);
+            return newRow
+          },
+        });
     return (
       <Card
         // loading={loading}
@@ -78,7 +128,43 @@ class TownDis extends React.PureComponent {
         bodyStyle={{ padding: 8}}
         bordered={false}
       >
-        <h4>乡镇分布</h4>
+        {
+            popupInfo ? [
+        <h4>乡镇分布--{popupInfo}</h4>,
+        <Chart
+          height={height}
+          data={this.dv2}
+          // forceFit
+          // padding='auto'
+          padding={{ top: 'auto', right: 30, bottom: 'auto', left: 100 }}
+          // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
+          width={220}
+        >
+          <Coord transpose />
+          <Axis
+            name="icdName"
+            label={{
+              offset: 6,
+              formatter: (val) => {
+                const text = val;
+                return `${ text.length > 7 ? text.slice(0,7) + '..' : text }`
+              },
+            }}
+          />
+          <Axis name="value" visible={false} />
+          <Tooltip />
+          <Geom
+            type={"interval"}
+            position="icdName*value*icdCode"
+            color={['icdCode', (item) => {
+              return colorMap[item]
+            }]}
+          >
+            <Label content="value" offset={5} />
+          </Geom>
+        </Chart>
+      ] : [
+        <h4>乡镇分布</h4>,
         <Chart
           height={height}
           data={this.dv}
@@ -98,13 +184,25 @@ class TownDis extends React.PureComponent {
           <Axis name="value" visible={false} />
           <Tooltip />
           <Geom
-            type="intervalStack"
+            type={"intervalStack"}
             position="x*value"
-            color={['icdCode', (item) =>{
+            color={['icdCode', (item) => {
               return colorMap[item]
+            }]}
+            tooltip={['x*y*icdCode*value', (x, y, icdCode, value) => {
+              return {
+                //自定义 tooltip 上显示的 title 显示内容等。
+                name: icdCode,
+                title: x + ' 总数:' + y,
+                value: value
+              };
             }]}
           />
         </Chart>
+            ]
+          }
+
+
       </Card>
     );
   }

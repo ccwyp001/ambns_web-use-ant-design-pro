@@ -14,7 +14,7 @@ const GenderDis = memo(({ genderData }) => {
   return (
     <div>
       {list.map(key => (
-        <Col span={24 / list.length}>
+        <Col span={24 / list.length} key={key}>
           <Pie
             animate={false}
             color={colors[key]}

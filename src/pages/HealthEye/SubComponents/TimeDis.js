@@ -47,7 +47,7 @@ class TimeDis extends React.Component {
   };
 
   render() {
-    const { height, colorMap } = this.props;
+    const { height, colorMap, topList } = this.props;
     const { data } = this.state;
 
     const timeScale = {
@@ -101,7 +101,7 @@ class TimeDis extends React.Component {
       })
       .transform({
         type: 'fold',
-        fields: data[0] && Object.keys(data[0].icds) || ['x'], // 展开字段集
+        fields: topList.length && topList || ['x'], // 展开字段集
         key: 'icdCode', // key字段
         value: 'value', // value字段
       });

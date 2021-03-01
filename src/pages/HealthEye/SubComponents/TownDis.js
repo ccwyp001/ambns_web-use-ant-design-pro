@@ -130,75 +130,79 @@ class TownDis extends React.PureComponent {
       >
         {
             popupInfo ? [
-        <h4>乡镇分布--{popupInfo}</h4>,
-        <Chart
-          height={height}
-          data={this.dv2}
-          // forceFit
-          // padding='auto'
-          padding={{ top: 'auto', right: 30, bottom: 'auto', left: 100 }}
-          // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
-          width={220}
-        >
-          <Coord transpose />
-          <Axis
-            name="icdName"
-            label={{
-              offset: 6,
-              formatter: (val) => {
-                const text = val;
-                return `${ text.length > 7 ? text.slice(0,7) + '..' : text }`
-              },
-            }}
-          />
-          <Axis name="value" visible={false} />
-          <Tooltip />
-          <Geom
-            type={"interval"}
-            position="icdName*value*icdCode"
-            color={['icdCode', (item) => {
-              return colorMap[item]
-            }]}
-          >
-            <Label content="value" offset={5} />
-          </Geom>
-        </Chart>
+              <div key={'towndis1'}>
+                <h4>乡镇分布--{popupInfo}</h4>
+                <Chart
+                  height={height}
+                  data={this.dv2}
+                  // forceFit
+                  // padding='auto'
+                  padding={{ top: 'auto', right: 30, bottom: 'auto', left: 100 }}
+                  // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
+                  width={220}
+                >
+                  <Coord transpose />
+                  <Axis
+                    name="icdName"
+                    label={{
+                      offset: 6,
+                      formatter: (val) => {
+                        const text = val;
+                        return `${ text.length > 7 ? text.slice(0,7) + '..' : text }`
+                      },
+                    }}
+                  />
+                  <Axis name="value" visible={false} />
+                  <Tooltip />
+                  <Geom
+                    type={"interval"}
+                    position="icdName*value*icdCode"
+                    color={['icdCode', (item) => {
+                      return colorMap[item]
+                    }]}
+                  >
+                    <Label content="value" offset={5} />
+                  </Geom>
+                </Chart>
+              </div>
       ] : [
-        <h4>乡镇分布</h4>,
-        <Chart
-          height={height}
-          data={this.dv}
-          // forceFit
-          padding='auto'
-          // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
-          width={220}
-        >
-          <Legend position='bottom-center' />
-          <Coord transpose />
-          <Axis
-            name="x"
-            label={{
-              offset: 12
-            }}
-          />
-          <Axis name="value" visible={false} />
-          <Tooltip />
-          <Geom
-            type={"intervalStack"}
-            position="x*value"
-            color={['icdCode', (item) => {
-              return colorMap[item]
-            }]}
-            tooltip={['x*y*icdCode*value', (x, y, icdCode, value) => {
-              return {
-                //自定义 tooltip 上显示的 title 显示内容等。
-                name: icdCode,
-                title: x + ' 总数:' + y,
-                value: value
-              };
-            }]}
-          />
-        </Chart>
+        <div key={'towndis2'}>
+          <h4>乡镇分布</h4>
+          <Chart
+            height={height}
+            data={this.dv}
+            // forceFit
+            padding='auto'
+            // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
+            width={220}
+          >
+            <Legend position='bottom-center' />
+            <Coord transpose />
+            <Axis
+              name="x"
+              label={{
+                offset: 12
+              }}
+            />
+            <Axis name="value" visible={false} />
+            <Tooltip />
+            <Geom
+              type={"intervalStack"}
+              position="x*value"
+              color={['icdCode', (item) => {
+                return colorMap[item]
+              }]}
+              tooltip={['x*y*icdCode*value', (x, y, icdCode, value) => {
+                return {
+                  //自定义 tooltip 上显示的 title 显示内容等。
+                  name: icdCode,
+                  title: x + ' 总数:' + y,
+                  value: value
+                };
+              }]}
+            />
+          </Chart>
+        </div>
             ]
           }
 

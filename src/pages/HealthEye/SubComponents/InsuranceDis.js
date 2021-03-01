@@ -58,8 +58,18 @@ class InsuranceDis extends React.Component {
             }}
           />
           <Axis name="y" visible={false} />
-          <Tooltip />
-          <Geom type="interval" position="x*y" />
+          <Tooltip showTitle={false} />
+          <Geom
+            type="interval"
+            position="x*y"
+            tooltip={['x*y', (x, y) => {
+              return {
+                //自定义 tooltip 上显示的 title 显示内容等。
+                name: x,
+                value: y
+              };
+            }]}
+          />
         </Chart>
       </div>
     );

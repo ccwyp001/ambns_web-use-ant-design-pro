@@ -14,6 +14,7 @@ import AgeDis from '@/pages/HealthEye/SubComponents/AgeDis';
 import TimeDis from '@/pages/HealthEye/SubComponents/TimeDis';
 import DiseaseDis from '@/pages/HealthEye/SubComponents/DiseaseDis';
 import OrgDis from '@/pages/HealthEye/SubComponents/OrgDis';
+import OrgDisV2 from '@/pages/HealthEye/SubComponents/OrgDisV2';
 import Result from '@/components/Result';
 // import CenterMap from '@/pages/HealthEye/SubComponents/CenterMap';
 const { Step } = Steps;
@@ -379,10 +380,11 @@ class HealthMap extends Component {
                 loading={fetchingOrgData}
                 title={<FormattedMessage id="app.health_map.OrgDis" defaultMessage="机构分布" />}
                 style={{ marginBottom: 16 }}
-                bodyStyle={{ textAlign: 'center', padding: 16 }}
+                bodyStyle={{ textAlign: 'center', padding: 16, height: 384 }}
                 bordered={false}
               >
-                <OrgDis orgData={orgData} height={352} colorMap={colorMap} topList={topList} />
+                {/*<OrgDis orgData={orgData} height={352} colorMap={colorMap} topList={topList} />*/}
+                <OrgDisV2 orgData={orgData} height={384} colorMap={colorMap} topList={topList} />
               </Card>
             </Suspense>
           </Col>

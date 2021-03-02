@@ -93,19 +93,10 @@ class OrgDis extends React.Component {
     return <Bar {...config} onReady={(plot) => {
       plot.on('mousewheel', (evt) => {
         evt.gEvent.originalEvent.preventDefault();
-        // console.log(evt.event.deltaY);
-        // console.log(plot.chart.controllers);
-        // console.log(plot.chart.getController('scrollbar'));
         const scrollbar = plot.chart.getController('scrollbar');
-        // console.log(scrollbar.getScrollRange());
-        // console.log(scrollbar.scrollbar);
         const { thumbOffset } = scrollbar.scrollbar.component.cfg;
         scrollbar.scrollbar.component.updateThumbOffset(thumbOffset + evt.event.deltaY/10);
       });
-      // plot.on('plot:click', (...args) => {
-      //   console.log(...args);
-      //   console.log(plot);
-      // });
   }}/>;
   }
 }

@@ -17,6 +17,7 @@ import {
   Util
 } from "bizcharts";
 import DataSet from "@antv/data-set";
+import {Bar} from "@ant-design/charts";
 
 function mapSum(d) {
   let count = 0;
@@ -45,7 +46,7 @@ class TownDis extends React.PureComponent {
   }
 
   render() {
-    const { height, townData:data, colorMap, topData, popupInfo } = this.props;
+    const { height, townData:data, colorMap, topData, popupInfo, title } = this.props;
     const topList = [];
       topData.map(re => {
         topList.push(re.x)
@@ -121,6 +122,32 @@ class TownDis extends React.PureComponent {
             return newRow
           },
         });
+    const config = {
+      width: 220,
+      isStack: true,
+      xField: 'value',
+      yField: 'x',
+      seriesField: 'icdCode',
+      color: function color(_ref) {
+        const icdCode = _ref.icdCode;
+        return colorMap[icdCode]
+      },
+      legend: {
+        position: 'bottom' ,
+      },
+      data: this.dv.rows.reverse(),
+      yAxis: {
+        label: {
+          formatter: (val) => {
+                const text = val.replace('玉环市', '')
+                return `${ text.length > 7 ? text.slice(0,7) + '..' : text }`
+              },
+        }},
+      scrollbar: {
+        type: 'vertical' ,
+        categorySize: 20,
+      },
+    };
     return (
       <Card
         // loading={loading}
@@ -131,7 +158,7 @@ class TownDis extends React.PureComponent {
         {
             popupInfo ? [
               <div key={'towndis1'}>
-                <h4>乡镇分布--{popupInfo}</h4>
+                <h4>{title}--{popupInfo}</h4>
                 <Chart
                   height={height}
                   data={this.dv2}
@@ -167,46 +194,52 @@ class TownDis extends React.PureComponent {
               </div>
       ] : [
         <div key={'towndis2'}>
-          <h4>乡镇分布</h4>
-          <Chart
-            height={height}
-            data={this.dv}
-            // forceFit
-            padding='auto'
-            // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}
-            width={220}
-          >
-            <Legend position='bottom-center' />
-            <Coord transpose />
-            <Axis
-              name="x"
-              label={{
-                offset: 12
-              }}
-            />
-            <Axis name="value" visible={false} />
-            <Tooltip />
-            <Geom
-              type={"intervalStack"}
-              position="x*value"
-              color={['icdCode', (item) => {
-                return colorMap[item]
-              }]}
-              tooltip={['x*y*icdCode*value', (x, y, icdCode, value) => {
-                return {
-                  //自定义 tooltip 上显示的 title 显示内容等。
-                  name: icdCode,
-                  title: x + ' 总数:' + y,
-                  value: value
-                };
-              }]}
-            />
-          </Chart>
+          <h4>{title}</h4>
+          <Bar {...config} onReady={(plot) => {
+              plot.on('mousewheel', (evt) => {
+                evt.gEvent.originalEvent.preventDefault();
+                const scrollbar = plot.chart.getController('scrollbar');
+                const { thumbOffset } = scrollbar.scrollbar.component.cfg;
+                scrollbar.scrollbar.component.updateThumbOffset(thumbOffset + evt.event.deltaY/10);
+              });
+          }}/>
+          {/*<Chart*/}
+          {/*  height={height}*/}
+          {/*  data={this.dv}*/}
+          {/*  // forceFit*/}
+          {/*  padding='auto'*/}
+          {/*  // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}*/}
+          {/*  width={220}*/}
+          {/*>*/}
+          {/*  <Legend position='bottom-center' />*/}
+          {/*  <Coord transpose />*/}
+          {/*  <Axis*/}
+          {/*    name="x"*/}
+          {/*    label={{*/}
+          {/*      offset: 12*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*  <Axis name="value" visible={false} />*/}
+          {/*  <Tooltip />*/}
+          {/*  <Geom*/}
+          {/*    type={"intervalStack"}*/}
+          {/*    position="x*value"*/}
+          {/*    color={['icdCode', (item) => {*/}
+          {/*      return colorMap[item]*/}
+          {/*    }]}*/}
+          {/*    tooltip={['x*y*icdCode*value', (x, y, icdCode, value) => {*/}
+          {/*      return {*/}
+          {/*        //自定义 tooltip 上显示的 title 显示内容等。*/}
+          {/*        name: icdCode,*/}
+          {/*        title: x + ' 总数:' + y,*/}
+          {/*        value: value*/}
+          {/*      };*/}
+          {/*    }]}*/}
+          {/*  />*/}
+          {/*</Chart>*/}
         </div>
             ]
           }
-
-
       </Card>
     );
   }

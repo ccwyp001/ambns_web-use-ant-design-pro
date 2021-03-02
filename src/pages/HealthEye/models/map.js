@@ -103,7 +103,10 @@ export default {
         return {
           name:fe.properties.name,
           x: fe.properties.center[0],
-          y: fe.properties.center[1]
+          y: fe.properties.center[1],
+          bound: fe.properties.bound,
+          features: fe.properties.children,
+          type: 'FeatureCollection',
         }
       });
       yield put({

@@ -36,7 +36,7 @@ export default function LabelControl(props) {
     // setControl(custom);
     mapScene.addControl(custom);
     return () => {
-      // console.log(22222);
+      // console.log(mapScene);
       mapScene.removeControl(custom);
     };
   }, [style]);

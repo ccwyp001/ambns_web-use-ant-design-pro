@@ -132,8 +132,15 @@ class TownDis extends React.PureComponent {
         const icdCode = _ref.icdCode;
         return colorMap[icdCode]
       },
+      maxBarWidth: 30,
       legend: {
         position: 'bottom' ,
+      },
+      tooltip: {
+        fields: ['x', 'y', 'icdCode', 'value'],
+        formatter: (datum) => {
+          return { name: datum.icdCode, value: datum.value, title: datum.x + ' 总数:' + datum.y };
+        },
       },
       data: this.dv.rows.reverse(),
       yAxis: {

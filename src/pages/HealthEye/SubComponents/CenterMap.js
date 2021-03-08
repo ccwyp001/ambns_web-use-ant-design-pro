@@ -50,9 +50,12 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
         pitch: 0,
         style: 'blank',
         // zoom: 10,
+        token: 'pk.eyJ1IjoiY2N3eXAwMDEiLCJhIjoiY2tsdWpic29tMXl5MTJ2bHdtcjYyZWVmbCJ9.yeuv6kEjLMNxO-l6_DLBxg',
+        // style: 'mapbox://styles/ccwyp001/ckluk0ujf3hia17ljg8pclr60',
       }}
       style={{
         position: 'relative',
+        // position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
@@ -230,7 +233,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
             values: 'fill',
           }}
           style={{
-            opacity: 1,
+            opacity: 0,
           }}
           // active={{
           //   option: { color: '#c49c39' },
@@ -313,18 +316,18 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
             color={{
               field: 'value',
               values: (value) => {
-                if (value > 20000) return '#781d2c';
-                if (value > 10000) return '#a8292f';
-                if (value > 5000) return '#cb362d';
-                if (value > 2000) return '#e44f35';
-                if (value > 1000) return '#ef7644';
-                if (value > 500) return '#f39d54';
-                if (value > 200) return '#f6bb67';
-                if (value > 100) return '#fad986';
-                if (value > 50) return '#fceca8';
-                if (value > 20) return '#fff2bd';
-                if (value > 10) return '#fff4d9';
-                return '#ffeeee'
+                if (value > 2000) return '#781d2c';
+                if (value > 1000) return '#a8292f';
+                if (value > 500) return '#cb362d';
+                if (value > 200) return '#e44f35';
+                if (value > 100) return '#ef7644';
+                if (value > 50) return '#f39d54';
+                if (value > 20) return '#f6bb67';
+                if (value > 10) return '#fad986';
+                if (value > 5) return '#fceca8';
+                if (value > 2) return '#fff2bd';
+                if (value > 1) return '#fff4d9';
+                return 'rgba(52,255,0,0.8)'
               }
             }}
             shape={{
@@ -338,7 +341,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
             size={{
               field: 'value',
               values: (value) => {
-                if (value + 10 > 40) return 40;
+                if (value + 10 > 30) return 30;
                 return value + 10;
               }
             }}
@@ -363,23 +366,24 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
 
           }}
           color={{
-            value: '#3e3e3e',
+            values: '#ffebeb',
           }}
           shape={{
             field: 'name',
             values: 'text',
           }}
           size={{
-            values: 16,
+            values: 13,
           }}
           style={{
             textAnchor: 'center',
             textOffset: [ 0, 0 ],
-            opacity: 1,
-            strokeOpacity: 1,
-            strokeWidth: 0,
-            textAllowOverlap: false,
+            // opacity: 1,
+            // spacing: 2,
+            textAllowOverlap: true,
             stroke: '#000',
+            strokeOpacity: 1,
+            strokeWidth: 0.3,
             padding: [0.1, 0.1],
           }}
         />,

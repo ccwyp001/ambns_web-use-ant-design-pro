@@ -2,10 +2,7 @@ import { formatMessage, FormattedMessage } from 'umi/locale';
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import router from 'umi/router';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
@@ -14,14 +11,10 @@ import {
   Button,
   Dropdown,
   Menu,
-  InputNumber,
-  DatePicker,
   Modal,
   message,
-  Badge,
   Divider,
   Steps,
-  Radio,
   Upload, Progress,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
@@ -31,7 +24,6 @@ const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
 const { Option } = Select;
-const RadioGroup = Radio.Group;
 const { Dragger } = Upload;
 
 const getValue = obj =>

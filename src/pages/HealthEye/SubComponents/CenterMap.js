@@ -11,6 +11,27 @@ import {Switch} from 'antd';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
 
+const blurColorMap = [
+  '#001D70',
+  '#00318A',
+  '#0047A5',
+  '#3D76DD',
+  '#5B8FF9',
+  '#7DAAFF',
+  '#9AC5FF',
+  '#B8E1FF'
+];
+const redColorMap = [
+  '#e44f35',
+  '#ef7644',
+  '#f39d54',
+  '#f6bb67',
+  '#fad986',
+  '#fceca8',
+  '#fff2bd',
+  '#fff4d9',
+];
+const ColorMap = redColorMap;
 const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) => {
   const [selectTownInfo, setSelectTownInfo] = React.useState();
   const [fillDownTownInfo, setfillDownTownInfo] = React.useState();
@@ -30,6 +51,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
     setTownDisVisible(!townDisVisible)
   };
   // console.log(1111111);
+  // console.log('is render too?')
   return (
     <>
       <Switch
@@ -316,17 +338,14 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
             color={{
               field: 'value',
               values: (value) => {
-                if (value > 2000) return '#781d2c';
-                if (value > 1000) return '#a8292f';
-                if (value > 500) return '#cb362d';
-                if (value > 200) return '#e44f35';
-                if (value > 100) return '#ef7644';
-                if (value > 50) return '#f39d54';
-                if (value > 20) return '#f6bb67';
-                if (value > 10) return '#fad986';
-                if (value > 5) return '#fceca8';
-                if (value > 2) return '#fff2bd';
-                if (value > 1) return '#fff4d9';
+                if (value > 200) return ColorMap[0];
+                if (value > 100) return ColorMap[1];
+                if (value > 50) return ColorMap[2];
+                if (value > 20) return ColorMap[3];
+                if (value > 10) return ColorMap[4];
+                if (value > 5) return ColorMap[5];
+                if (value > 2) return ColorMap[6];
+                if (value > 1) return ColorMap[7];
                 return 'rgba(52,255,0,0.8)'
               }
             }}
@@ -355,19 +374,43 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
           <PointLayer
           key="40"
           source={{
-            data: dataPoint.filter(it => it.name === fillDownTownInfo)[0],
-            // parser: {
-            //   type: "json",
-            //   x: "x",
-            //   y: "y"
-            // }
-          }}
+              data: dataPoint.filter(it => it.name === fillDownTownInfo)[0],
+              parser: {
+                type: 'geojson',
+              },
+              transforms: [
+              {
+                type: 'map',
+                callback: (item) => {
+                  const comName = item.name;
+                  const comData = townData.filter(it => it.x === fillDownTownInfo)
+                  const data = comData[0]?.children.filter(it => it.x === comName)
+                  item.value = data && data.length ? data[0]?.y : 0
+                  return item;
+                }
+              }
+            ]
+            }}
           options={{
 
           }}
           color={{
-            values: '#ffebeb',
+              field: 'value',
+              values: (value) => {
+                if (value > 200) return '#781d2c';
+                if (value > 100) return '#a8292f';
+                if (value > 50) return '#cb362d';
+                if (value > 20) return '#e44f35';
+                if (value > 10) return '#ef7644';
+                if (value > 5) return '#f39d54';
+                if (value > 2) return '#f6bb67';
+                if (value > 1) return '#fad986';
+                return 'rgba(52,255,0,0.8)'
+              }
           }}
+          // color={{
+          //   values: '#ffebeb',
+          // }}
           shape={{
             field: 'name',
             values: 'text',
@@ -383,7 +426,7 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
             textAllowOverlap: true,
             stroke: '#000',
             strokeOpacity: 1,
-            strokeWidth: 0.3,
+            strokeWidth: 0.5,
             padding: [0.1, 0.1],
           }}
         />,
@@ -408,9 +451,9 @@ const CenterMap = React.memo(({ data, dataPoint, townData, colorMap, topData }) 
     </>
   );
 }, (next, prev)=>{
-  // console.log(next);
-  // console.log(prev);
-  // console.log(shallowEqual(next, prev));
+  let _prev = JSON.stringify(prev)
+  let _next = JSON.stringify(next)
+  return _prev === _next
 });
 
 export default CenterMap;

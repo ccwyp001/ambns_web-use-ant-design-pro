@@ -16,6 +16,13 @@ class OrgDis extends React.Component {
     orgData: [],
     height: 188
   };
+  ds = new DataSet();
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    let _prev = JSON.stringify(this.props)
+    let _next = JSON.stringify(nextProps)
+    return _prev !== _next
+  }
 
   constructor(props) {
     super(props);
@@ -29,8 +36,7 @@ class OrgDis extends React.Component {
     const { height, data } = this.state;
     const { colorMap, topList } = this.props;
 
-    const ds = new DataSet();
-    const dv = ds.createView().source(data);
+    const dv = this.ds.createView().source(data);
     dv.source(data).transform({
       type: "sort",
       callback(a,b){

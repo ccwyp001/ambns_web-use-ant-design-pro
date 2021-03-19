@@ -5,10 +5,11 @@ import { createPortal } from 'react-dom';
 import _slicedToArray from "@babel/runtime/helpers/slicedToArray";
 
 const {useEffect, useState, useCallback} = React;
+
 export default function LabelControl(props) {
   const {children, className, style, position} = props;
-  const mapScene = useSceneValue();
   const el = document.createElement('div');
+  const mapScene = useSceneValue();
   // const _useState = useState();
   // const _useState2 = _slicedToArray(_useState, 2);
   // const setControl = _useState2[1];

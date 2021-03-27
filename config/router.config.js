@@ -54,10 +54,10 @@ export default [
                 path: '/health_eye/config/agesplit',
                 component: './HealthEye/EyeConfig/AgeSplit',
               },
-              // {
-              //   path: '/health_eye/config/translation',
-              //   component: './HealthEye/EyeConfig/TranslationSame',
-              // },
+              {
+                path: '/health_eye/config/translation',
+                component: './HealthEye/EyeConfig/TranslationSame',
+              },
             ],
           },
         ],

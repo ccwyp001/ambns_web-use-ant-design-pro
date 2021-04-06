@@ -21,12 +21,12 @@ class Info extends Component {
       agesplit: (
         <FormattedMessage id="app.health_map.config.agesplit" defaultMessage="年龄组配置" />
       ),
-      // translation: (
-      //   <FormattedMessage
-      //     id="app.health_map.config.translation"
-      //     defaultMessage="Geo转换"
-      //   />
-      // ),
+      translation: (
+        <FormattedMessage
+          id="app.health_map.config.translation"
+          defaultMessage="Geo转换"
+        />
+      ),
     };
     const key = location.pathname.replace(`${match.path}/`, '');
     this.state = {

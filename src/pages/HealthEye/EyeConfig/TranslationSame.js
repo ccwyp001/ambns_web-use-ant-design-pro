@@ -1,68 +1,101 @@
 import React, { Fragment, PureComponent } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import { Card, Col, Icon, List, Tree } from 'antd';
+import {connect} from "dva";
 const { TreeNode } = Tree;
 
+@connect(({ geoTrans, loading }) => ({
+  geoTrans,
+  loading: loading.models.geoTrans,
+}))
 class GeoTrans extends PureComponent {
   state = {
     selectData: '',
-    treeData: [
-      { title: 'Expand to load', key: '0' },
-      { title: 'Expand to load', key: '1' },
-      { title: 'Tree Node', key: '2', isLeaf: true },
-    ],
+    treeData: [],
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    const { dispatch,  } = this.props;
+    dispatch({
+      type: 'geoTrans/fetch',
+      payload: {
+        fullname: '浙江省'
+      },
+      callback: () => {
+        const { geoTrans: {geoTrans} } = this.props;
+        console.log(geoTrans);
+        this.setState({treeData: geoTrans?.children})
+      }
+    });
+  }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+
+  }
   onSelect = (info, e) => {
     this.setState({ selectData: info });
     // console.log(info);
     // console.log(e)
   };
 
-  onLoadData = treeNode =>
-    new Promise(resolve => {
+  onLoadData = treeNode => {
+    console.log(treeNode);
+    return (
+    new Promise((resolve, reject) => {
       if (treeNode.props.children) {
         resolve();
         return;
       }
       setTimeout(() => {
-        treeNode.props.dataRef.children = [
-          { title: 'Child Node', key: `${treeNode.props.eventKey}-0` },
-          { title: 'Child Node', key: `${treeNode.props.eventKey}-1` },
-        ];
-        this.setState({
-          treeData: [...this.state.treeData],
+        const { dispatch,  } = this.props;
+        dispatch({
+          type: 'geoTrans/fetch',
+          payload: {
+            fullname: treeNode.props.dataRef.fullname
+          },
+          callback: () => {
+            const { geoTrans: {geoTrans} } = this.props;
+            console.log(geoTrans);
+            treeNode.props.dataRef.children = geoTrans?.children;
+            this.setState({
+              treeData: [...this.state.treeData],
+            });
+          }
         });
         resolve();
-      }, 1000);
-    });
+      }, 100);
+    })
+    )
+  };
 
   renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
         return (
-          <TreeNode title={item.title} key={item.key} dataRef={item}>
+          <TreeNode title={item.name} key={item.key} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} {...item} dataRef={item} />;
+      return <TreeNode key={item.key} title={item.name} dataRef={item} />;
     });
 
   render() {
+    const {
+      geoTrans: { geoTrans },
+      loading,
+    } = this.props;
     const { treeData, selectData } = this.state;
 
     return (
       <Fragment>
         <Col xl={10} lg={24} md={24} sm={24} xs={24}>
-          <Card bordered={false}>
+          <Card bordered={false} bodyStyle={{ height: 420 }}>
             {treeData.length ? (
               <Tree
                 className="draggable-tree"
                 // defaultExpandedKeys={expandedKeys}
+                style={{ height: '100%', overflow: 'auto' }}
                 blockNode
                 loadData={this.onLoadData}
                 onSelect={this.onSelect}

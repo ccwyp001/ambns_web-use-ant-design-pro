@@ -210,40 +210,6 @@ class TownDis extends React.PureComponent {
                 scrollbar.scrollbar.component.updateThumbOffset(thumbOffset + evt.event.deltaY/10);
               });
           }}/>
-          {/*<Chart*/}
-          {/*  height={height}*/}
-          {/*  data={this.dv}*/}
-          {/*  // forceFit*/}
-          {/*  padding='auto'*/}
-          {/*  // padding={{ top: 20, right: 10, bottom: 20, left: 70 }}*/}
-          {/*  width={220}*/}
-          {/*>*/}
-          {/*  <Legend position='bottom-center' />*/}
-          {/*  <Coord transpose />*/}
-          {/*  <Axis*/}
-          {/*    name="x"*/}
-          {/*    label={{*/}
-          {/*      offset: 12*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/*  <Axis name="value" visible={false} />*/}
-          {/*  <Tooltip />*/}
-          {/*  <Geom*/}
-          {/*    type={"intervalStack"}*/}
-          {/*    position="x*value"*/}
-          {/*    color={['icdCode', (item) => {*/}
-          {/*      return colorMap[item]*/}
-          {/*    }]}*/}
-          {/*    tooltip={['x*y*icdCode*value', (x, y, icdCode, value) => {*/}
-          {/*      return {*/}
-          {/*        //自定义 tooltip 上显示的 title 显示内容等。*/}
-          {/*        name: icdCode,*/}
-          {/*        title: x + ' 总数:' + y,*/}
-          {/*        value: value*/}
-          {/*      };*/}
-          {/*    }]}*/}
-          {/*  />*/}
-          {/*</Chart>*/}
         </div>
             ]
           }

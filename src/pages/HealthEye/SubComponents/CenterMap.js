@@ -7,9 +7,11 @@ import {
   Popup,
 } from '@antv/l7-react';
 import * as React from 'react';
-import { Switch } from 'antd';
+import { Switch, Avatar, Col, Row } from 'antd';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
+import styles from './CenterMap.less';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
+import Link from "umi/link";
 
 const blurColorMap = [
   '#001D70',
@@ -22,14 +24,34 @@ const blurColorMap = [
   '#B8E1FF',
 ];
 const redColorMap = [
+  '#781d2c',
+  '#cb362d',
   '#e44f35',
   '#ef7644',
-  '#f39d54',
   '#f6bb67',
   '#fad986',
   '#fceca8',
-  '#fff2bd',
   '#fff4d9',
+];
+const bigValRange = [
+  10000,
+  5000,
+  1000,
+  500,
+  200,
+  100,
+  50,
+  10
+];
+const normalValRange = [
+  200,
+  100,
+  50,
+  20,
+  10,
+  5,
+  2,
+  1,
 ];
 const ColorMap = redColorMap;
 const CenterMap = React.memo(
@@ -50,13 +72,10 @@ const CenterMap = React.memo(
     };
     const selectCommunity = args => {
       setSelectCommunityInfo(args.feature.name);
-      // setSelectTownInfo(data.features[args.featureId] ? data.features[args.featureId].properties.name : undefined);
     };
     const onChange = () => {
       setTownDisVisible(!townDisVisible);
     };
-    // console.log(1111111);
-    // console.log('is render too?')
     return (
       <>
         <Switch
@@ -91,11 +110,28 @@ const CenterMap = React.memo(
             width: '100%',
             height: '100%',
             maxHeight: '600px',
+            // outlineColor: 'red',
           }}
+          className={styles.mapScene}
+          onFocus={() => blur(this)}
           onSceneLoaded={scene => {
             scene.setMapStatus({ doubleClickZoom: false });
           }}
         >
+          <LabelControl position="bottomleft" key="29" style={{ position: 'relative' }}>
+            <div className={styles.label}>
+              <Row gutter={16}>
+                {ColorMap.map((item, index) =>
+                  (<Col key={index} lg={24} xl={24}>
+                    <Link to={'#'}>
+                      <Avatar shape="square" size={14} style={{ backgroundColor: item}}/>
+                      { !!fillDownTownInfo && `> ${normalValRange[index]}` || `> ${bigValRange[index]}`}
+                    </Link>
+                  </Col>))
+                }
+              </Row>
+            </div>
+          </LabelControl>
           {data &&
             townData.length && [
               <PolygonLayer
@@ -126,17 +162,9 @@ const CenterMap = React.memo(
                 color={{
                   field: 'value',
                   values: value => {
-                    if (value > 20000) return '#781d2c';
-                    if (value > 10000) return '#a8292f';
-                    if (value > 5000) return '#cb362d';
-                    if (value > 2000) return '#e44f35';
-                    if (value > 1000) return '#ef7644';
-                    if (value > 500) return '#f39d54';
-                    if (value > 200) return '#f6bb67';
-                    if (value > 100) return '#fad986';
-                    if (value > 50) return '#fceca8';
-                    if (value > 20) return '#fff2bd';
-                    if (value > 10) return '#fff4d9';
+                    for (let i=0; i<bigValRange.length; i++){
+                      if (value > bigValRange[i]) return ColorMap[i]
+                    }
                     return '#ffeeee';
                   },
                 }}
@@ -358,14 +386,9 @@ const CenterMap = React.memo(
               color={{
                 field: 'value',
                 values: value => {
-                  if (value > 200) return ColorMap[0];
-                  if (value > 100) return ColorMap[1];
-                  if (value > 50) return ColorMap[2];
-                  if (value > 20) return ColorMap[3];
-                  if (value > 10) return ColorMap[4];
-                  if (value > 5) return ColorMap[5];
-                  if (value > 2) return ColorMap[6];
-                  if (value > 1) return ColorMap[7];
+                  for (let i=0; i<normalValRange.length; i++){
+                    if (value > normalValRange[i]) return ColorMap[i]
+                  }
                   return 'rgba(52,255,0,0.8)';
                 },
               }}
@@ -468,11 +491,6 @@ const CenterMap = React.memo(
             // >
             //   {popupInfo.feature.properties.name}
             // </Popup>,
-            // <LabelControl
-            //   key="9"
-            // >
-            //   {popupInfo.feature.properties.name}
-            // </LabelControl>,
           ]) ||
             []}
         </MapboxScene>

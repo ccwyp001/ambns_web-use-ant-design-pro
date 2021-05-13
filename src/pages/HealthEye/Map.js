@@ -489,7 +489,7 @@ class HealthMap extends Component {
 }
 
 export default props => (
-  <AsyncLoadBizCharts>
+  // <AsyncLoadBizCharts>
     <HealthMap {...props} />
-  </AsyncLoadBizCharts>
+  // </AsyncLoadBizCharts>
 );

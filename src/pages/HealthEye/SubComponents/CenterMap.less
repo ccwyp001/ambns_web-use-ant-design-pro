@@ -1,0 +1,48 @@
+@import '~antd/lib/style/themes/default.less';
+@import '~@/utils/utils.less';
+
+.mapScene {
+  :global {
+
+  }
+
+  //&:focus {
+  //  outline: none;
+  //}
+
+  div {
+    //&:focus {
+    //  outline: none;
+    //}
+
+    canvas {
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
+
+.label {
+  width: 100px;
+
+  :global {
+    .ant-avatar {
+      margin-right: 8px;
+    }
+  }
+
+  a {
+    display: block;
+    margin-bottom: 4px;
+    line-height: 12px;
+    font-size: 14px;
+    color: @text-color;
+    transition: color 0.3s;
+    .textOverflow();
+
+    &:hover {
+      color: @primary-color;
+    }
+  }
+}

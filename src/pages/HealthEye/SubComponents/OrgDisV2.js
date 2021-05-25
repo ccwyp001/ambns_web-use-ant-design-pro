@@ -75,6 +75,7 @@ class OrgDis extends React.Component {
       xField: 'value',
       yField: 'x',
       seriesField: 'icdCode',
+      maxBarWidth: 30,
       color: function color(_ref) {
         const icdCode = _ref.icdCode;
         return colorMap[icdCode]

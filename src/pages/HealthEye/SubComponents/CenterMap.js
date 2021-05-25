@@ -7,11 +7,25 @@ import {
   Popup,
 } from '@antv/l7-react';
 import * as React from 'react';
-import { Switch, Avatar, Col, Row } from 'antd';
+import { Switch, Avatar, Col, Row, Radio } from 'antd';
 import LabelControl from '@/pages/HealthEye/SubComponents/labelControl';
 import styles from './CenterMap.less';
 import TownDis from '@/pages/HealthEye/SubComponents/TownDis';
 import Link from "umi/link";
+
+const personCount = {
+  '玉城街道': 110080,
+  '坎门街道': 67244,
+  '大麦屿街道': 58339,
+  '楚门镇': 51990,
+  '清港镇': 51359,
+  '芦浦镇': 18427,
+  '龙溪镇': 17672,
+  '干江镇': 22096,
+  '沙门镇': 25737,
+  '鸡山乡': 7465,
+  '海山乡': 7518,
+}
 
 const blurColorMap = [
   '#001D70',
@@ -60,6 +74,7 @@ const CenterMap = React.memo(
     const [fillDownTownInfo, setfillDownTownInfo] = React.useState();
     const [selectCommunityInfo, setSelectCommunityInfo] = React.useState();
     const [townDisVisible, setTownDisVisible] = React.useState(false);
+    const [radioValue, setRadioValue] = React.useState('count');
     const selectTown = args => {
       setSelectTownInfo(
         data.features[args.featureId] ? data.features[args.featureId].properties.name : undefined
@@ -76,8 +91,27 @@ const CenterMap = React.memo(
     const onChange = () => {
       setTownDisVisible(!townDisVisible);
     };
+    const handleRadioChange = ({target}) => {
+      setRadioValue(target.value);
+    };
     return (
       <>
+        {/*<Radio.Group*/}
+        {/*  buttonStyle="solid"*/}
+        {/*  value={radioValue}*/}
+        {/*  size='small'*/}
+        {/*  onChange={handleRadioChange}*/}
+        {/*  style={{*/}
+        {/*    width: 100,*/}
+        {/*    zIndex: 2,*/}
+        {/*    position: 'absolute',*/}
+        {/*    right: '50px',*/}
+        {/*    top: '20px',*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  <Radio.Button value='count'>例数</Radio.Button>*/}
+        {/*  <Radio.Button value='rate'>按率</Radio.Button>*/}
+        {/*</Radio.Group>*/}
         <Switch
           defaultChecked={false}
           onChange={onChange}
@@ -113,17 +147,18 @@ const CenterMap = React.memo(
             // outlineColor: 'red',
           }}
           className={styles.mapScene}
-          onFocus={() => blur(this)}
           onSceneLoaded={scene => {
             scene.setMapStatus({ doubleClickZoom: false });
           }}
         >
+          // 地图图例 左下角
           <LabelControl position="bottomleft" key="29" style={{ position: 'relative' }}>
             <div className={styles.label}>
               <Row gutter={16}>
+                <div style={{ fontSize: 14 }}>{ radioValue === 'rate' && '单位：1/10万' || '单位：例'}</div>
                 {ColorMap.map((item, index) =>
                   (<Col key={index} lg={24} xl={24}>
-                    <Link to={'#'}>
+                    <Link to={null}>
                       <Avatar shape="square" size={14} style={{ backgroundColor: item}}/>
                       { !!fillDownTownInfo && `> ${normalValRange[index]}` || `> ${bigValRange[index]}`}
                     </Link>
@@ -153,7 +188,8 @@ const CenterMap = React.memo(
                         const townName = item.name;
                         const data = townData.filter(it => it.x === townName);
                         item.value = (data[0] && data[0].y) || 0;
-                        // console.log(item)
+                        if (radioValue === 'rate') item.value = item.value / 100000 * personCount[townName];
+                        // console.log(item);
                         return item;
                       },
                     },
@@ -165,7 +201,7 @@ const CenterMap = React.memo(
                     for (let i=0; i<bigValRange.length; i++){
                       if (value > bigValRange[i]) return ColorMap[i]
                     }
-                    return '#ffeeee';
+                    return '#fdf7f7';
                   },
                 }}
                 shape={{

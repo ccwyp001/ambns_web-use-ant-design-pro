@@ -12,6 +12,7 @@ import GenderDis from './SubComponents/GenderDis';
 import InsuranceDis from './SubComponents/InsuranceDis';
 import AgeDis from '@/pages/HealthEye/SubComponents/AgeDis';
 import TimeDis from '@/pages/HealthEye/SubComponents/TimeDis';
+import TimeDisV2 from '@/pages/HealthEye/SubComponents/TimeDisV2';
 import DiseaseDis from '@/pages/HealthEye/SubComponents/DiseaseDis';
 import OrgDis from '@/pages/HealthEye/SubComponents/OrgDis';
 import OrgDisV2 from '@/pages/HealthEye/SubComponents/OrgDisV2';

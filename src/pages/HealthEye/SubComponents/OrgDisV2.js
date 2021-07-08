@@ -71,6 +71,7 @@ class OrgDis extends React.Component {
       })
     ;
     const config = {
+      height: height,
       isStack: true,
       xField: 'value',
       yField: 'x',
